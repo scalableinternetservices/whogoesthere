@@ -1,0 +1,122 @@
+<tsung loglevel="notice">
+<clients>
+<client host="localhost" use_controller_vm="true" maxusers="15000"/>
+</clients>
+<servers>
+<server host="bboe.bua3k4fnrj.us-west-2.elasticbeanstalk.com" port="80" type="tcp"/>
+</servers>
+<load>
+<arrivalphase phase="1" duration="20" unit="second">
+<users arrivalrate="16" unit="second"/>
+</arrivalphase>
+<arrivalphase phase="2" duration="20" unit="second">
+<users arrivalrate="17" unit="second"/>
+</arrivalphase>
+<arrivalphase phase="3" duration="20" unit="second">
+<users arrivalrate="18" unit="second"/>
+</arrivalphase>
+<arrivalphase phase="4" duration="20" unit="second">
+<users arrivalrate="19" unit="second"/>
+</arrivalphase>
+<arrivalphase phase="5" duration="20" unit="second">
+<users arrivalrate="20" unit="second"/>
+</arrivalphase>
+<arrivalphase phase="6" duration="20" unit="second">
+<users arrivalrate="21" unit="second"/>
+</arrivalphase>
+<arrivalphase phase="7" duration="20" unit="second">
+<users arrivalrate="22" unit="second"/>
+</arrivalphase>
+<arrivalphase phase="8" duration="20" unit="second">
+<users arrivalrate="23" unit="second"/>
+</arrivalphase>
+</load>
+<options>
+<option name="idle_timeout" value="60000"/>
+<option name="global_ack_timeout" value="60000"/>
+</options>
+<sessions>
+<session name="http-example" probability="100" type="ts_http">
+<request>
+<match do="abort" when="match">HTTP/1.1 502</match>
+<match do="abort_test" when="nomatch">HTTP/1.1 200</match>
+<http url="/"/>
+</request>
+<thinktime random="true" value="1"/>
+<request>
+<match do="abort" when="match">HTTP/1.1 502</match>
+<match do="abort_test" when="nomatch">HTTP/1.1 200</match>
+<dyn_variable name="authenticity_token"/>
+<http url="/communities/new"/>
+</request>
+<thinktime random="true" value="2"/>
+<setdynvars sourcetype="eval" code="fun({Pid,DynVars})-> {ok,Val}=ts_dynvars:lookup(authenticity_token,DynVars), re:replace(Val,"[+]","%2B",[global, {return,list}]) end.">
+<var name="authenticity_token"/>
+</setdynvars>
+<setdynvars sourcetype="random_number" start="1" end="999999999">
+<var name="random_community_name"/>
+</setdynvars>
+<request subst="true">
+<match do="abort" when="match">HTTP/1.1 502</match>
+<match do="abort_test" when="nomatch">HTTP/1.1 302</match>
+<dyn_variable name="created_community_id" re="[Ll]ocation: http://.*/communities/(.*)\r"/>
+<http contents="authenticity_token=%%_authenticity_token%%&community%5Bname%5D=community_name_%%_random_community_name%%&commit=Create+Community" method="POST" url="/communities"/>
+</request>
+<request subst="true">
+<match do="abort" when="match">HTTP/1.1 502</match>
+<match do="abort_test" when="nomatch">HTTP/1.1 200</match>
+<http url="/communities/%%_created_community_id%%"/>
+</request>
+<thinktime random="true" value="1"/>
+<request>
+<match do="abort" when="match">HTTP/1.1 502</match>
+<match do="abort_test" when="nomatch">HTTP/1.1 200</match>
+<dyn_variable name="authenticity_token"/>
+<http url="/submissions/new"/>
+</request>
+<thinktime random="true" value="2"/>
+<setdynvars sourcetype="eval" code="fun({Pid,DynVars})-> {ok,Val}=ts_dynvars:lookup(authenticity_token,DynVars), re:replace(Val,"[+]","%2B",[global, {return,list}]) end.">
+<var name="authenticity_token"/>
+</setdynvars>
+<setdynvars sourcetype="random_number" start="1" end="999999999">
+<var name="random_submission_name"/>
+</setdynvars>
+<request subst="true">
+<match do="abort" when="match">HTTP/1.1 502</match>
+<match do="abort_test" when="nomatch">HTTP/1.1 302</match>
+<dyn_variable name="created_submission_id" re="[Ll]ocation: http://.*/submissions/(.*)\r"/>
+<http contents="authenticity_token=%%_authenticity_token%%&submission%5Btitle%5D=link_%%_random_submission_name%%&submission%5Burl%5D=http%3A%2F%2Fwww.article.com%2F%%_random_submission_name%%&submission%5Bcommunity_id%5D=%%_created_community_id%%&commit=Create+Submission" method="POST" url="/submissions"/>
+</request>
+<request subst="true">
+<match do="abort" when="match">HTTP/1.1 502</match>
+<match do="abort_test" when="nomatch">HTTP/1.1 200</match>
+<dyn_variable name="authenticity_token" xpath="/html/head/meta[@name='csrf-token']/@content"/>
+<http url="/submissions/%%_created_submission_id%%"/>
+</request>
+<setdynvars sourcetype="eval" code="fun({Pid,DynVars})-> {ok,Val}=ts_dynvars:lookup(authenticity_token,DynVars), re:replace(Val,"[+]","%2B",[global, {return,list}]) end.">
+<var name="authenticity_token"/>
+</setdynvars>
+<thinktime random="true" value="1"/>
+<request subst="true">
+<match do="abort" when="match">HTTP/1.1 502</match>
+<match do="abort_test" when="nomatch">HTTP/1.1 302</match>
+<http contents="authenticity_token=%%_authenticity_token%%" method="DELETE" url="/submissions/%%_created_submission_id%%"/>
+</request>
+<thinktime random="true" value="1"/>
+<request subst="true">
+<match do="abort" when="match">HTTP/1.1 502</match>
+<match do="abort_test" when="nomatch">HTTP/1.1 200</match>
+<dyn_variable name="authenticity_token" xpath="/html/head/meta[@name='csrf-token']/@content"/>
+<http url="/communities/%%_created_community_id%%"/>
+</request>
+<setdynvars sourcetype="eval" code="fun({Pid,DynVars})-> {ok,Val}=ts_dynvars:lookup(authenticity_token,DynVars), re:replace(Val,"[+]","%2B",[global, {return,list}]) end.">
+<var name="authenticity_token"/>
+</setdynvars>
+<request subst="true">
+<match do="abort" when="match">HTTP/1.1 502</match>
+<match do="abort_test" when="nomatch">HTTP/1.1 302</match>
+<http contents="authenticity_token=%%_authenticity_token%%" method="DELETE" url="/communities/%%_created_community_id%%"/>
+</request>
+</session>
+</sessions>
+</tsung>
