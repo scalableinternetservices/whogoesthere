@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  resources :comments
+  resources :invitations
+  resources :events
   resources :users
   resource :tweets
   
