@@ -1,6 +1,6 @@
 <h1>Editing Invitation</h1>
 
-<%= render 'form', invitation: @invitation %>
+<%= render 'form', user: @user, event: @event, invitation: @invitation %>
 
 <%= link_to 'Show', @invitation %> |
-<%= link_to 'Back', invitations_path %>
+<%= link_to 'Back', user_event_invitations_path(@invitation.event.user, @invitation.event) %>

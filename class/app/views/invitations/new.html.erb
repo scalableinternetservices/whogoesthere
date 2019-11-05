@@ -1,5 +1,5 @@
 <h1>New Invitation</h1>
 
-<%= render 'form', invitation: @invitation %>
+<%= render 'form', user: @user, event: @event, invitation: @event.invitations.build %>
 
-<%= link_to 'Back', invitations_path %>
+<%= link_to 'Back', user_event_invitations_path %>

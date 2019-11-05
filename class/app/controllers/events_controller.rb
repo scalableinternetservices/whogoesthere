@@ -15,7 +15,11 @@ class EventsController < ApplicationController
 
   # GET /events/new
   def new
-    @user = User.find(params[:user_id])
+    begin
+      @user = User.find(params[:user_id])
+    rescue
+      head 403
+    end
     @event = @user.events.new
   end
 

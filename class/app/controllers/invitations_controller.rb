@@ -4,7 +4,17 @@ class InvitationsController < ApplicationController
   # GET /invitations
   # GET /invitations.json
   def index
-    @invitations = Invitation.all
+    begin
+      @user = User.find(params[:user_id])
+      @event = @user.events.find(params[:event_id])
+    rescue
+      head 403
+    end
+    if @event == nil
+      @invitations = nil
+    else
+      @invitations = @event.invitations.all
+    end
   end
 
   # GET /invitations/1
@@ -14,7 +24,13 @@ class InvitationsController < ApplicationController
 
   # GET /invitations/new
   def new
-    @invitation = Invitation.new
+    begin
+      @user = User.find(params[:user_id])
+      @event = @user.events.find(params[:event_id])
+    rescue
+      head 403
+    end
+    @invitation = @event.invitations.new
   end
 
   # GET /invitations/1/edit
@@ -24,11 +40,17 @@ class InvitationsController < ApplicationController
   # POST /invitations
   # POST /invitations.json
   def create
-    @invitation = Invitation.new(invitation_params)
+    begin
+      @user = User.find(params[:user_id])
+      @event = @user.events.find(params[:event_id])
+    rescue
+      head 403
+    end
+    @invitation = @event.invitations.new(invitation_params)
 
     respond_to do |format|
       if @invitation.save
-        format.html { redirect_to @invitation, notice: 'Invitation was successfully created.' }
+        format.html { redirect_to user_event_invitations_path(@user,@event), notice: 'Invitation was successfully created.' }
         format.json { render :show, status: :created, location: @invitation }
       else
         format.html { render :new }
@@ -54,9 +76,11 @@ class InvitationsController < ApplicationController
   # DELETE /invitations/1
   # DELETE /invitations/1.json
   def destroy
+    @event = @invitation.event
+    @user = @event.user
     @invitation.destroy
     respond_to do |format|
-      format.html { redirect_to invitations_url, notice: 'Invitation was successfully destroyed.' }
+      format.html { redirect_to user_event_invitations_url(@user,@event), notice: 'Invitation was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
@@ -64,7 +88,11 @@ class InvitationsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_invitation
-      @invitation = Invitation.find(params[:id])
+      begin
+        @invitation = Invitation.find(params[:id])
+      rescue
+        head 403
+      end
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

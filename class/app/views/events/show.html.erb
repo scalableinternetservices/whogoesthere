@@ -29,6 +29,6 @@
   <strong>User:</strong>
   <%= @event.user_id %>
 </p>
-
+<%= link_to 'See invitations for this event', user_event_invitations_path(@user,@event) %> <br><br>
 <%= link_to 'Edit', edit_user_event_path(@event.user_id,@event) %> |
 <%= link_to 'Back', user_events_path %>
