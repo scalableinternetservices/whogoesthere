@@ -3,7 +3,6 @@ Rails.application.routes.draw do
   resources :users do
     resources :events
   end
-
   resources :comments
   resources :invitations
   #resources :events
