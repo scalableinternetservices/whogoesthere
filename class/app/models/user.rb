@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  has_many :events
+  has_many :events, dependent: :destroy
   has_many :invitations
   has_many :comments
   

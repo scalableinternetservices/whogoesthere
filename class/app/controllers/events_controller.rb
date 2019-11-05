@@ -4,7 +4,8 @@ class EventsController < ApplicationController
   # GET /events
   # GET /events.json
   def index
-    @events = Event.all
+    @user = User.find(params[:user_id])
+    @events = @user.events.all
   end
 
   # GET /events/1
@@ -14,21 +15,25 @@ class EventsController < ApplicationController
 
   # GET /events/new
   def new
-    @event = Event.new
+    @user = User.find(params[:user_id])
+    @event = @user.events.new
   end
 
   # GET /events/1/edit
   def edit
+    @user = User.find(params[:user_id])
+    @event = @user.events.find(params[:id])
   end
 
   # POST /events
   # POST /events.json
   def create
-    @event = Event.new(event_params)
+    @user = User.find(params[:user_id])
+    @event = @user.events.new(event_params)
 
     respond_to do |format|
       if @event.save
-        format.html { redirect_to @event, notice: 'Event was successfully created.' }
+        format.html { redirect_to user_events_path(@user), notice: 'Event was successfully created.' }
         format.json { render :show, status: :created, location: @event }
       else
         format.html { render :new }
@@ -40,9 +45,11 @@ class EventsController < ApplicationController
   # PATCH/PUT /events/1
   # PATCH/PUT /events/1.json
   def update
+    @user = User.find(params[:user_id])
+    @event = Event.find(params[:id]);
     respond_to do |format|
       if @event.update(event_params)
-        format.html { redirect_to @event, notice: 'Event was successfully updated.' }
+        format.html { redirect_to user_events_path(@user), notice: 'Event was successfully updated.' }
         format.json { render :show, status: :ok, location: @event }
       else
         format.html { render :edit }
@@ -56,7 +63,7 @@ class EventsController < ApplicationController
   def destroy
     @event.destroy
     respond_to do |format|
-      format.html { redirect_to events_url, notice: 'Event was successfully destroyed.' }
+      format.html { redirect_to user_events_url, notice: 'Event was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
