@@ -1,80 +1,140 @@
 FORMAT: 1A
 HOST: http://polls.apiblueprint.org/
 
-# Joojle
+# Whogoesthere
 
-Polls is a simple API allowing consumers to view polls and vote in them.
+It's Whogoesthere.
 
-## Questions Collection [/questions]
+## Event [/event/{id}]
+### Get One Event [GET]
++ Response 200 (application/json)
 
-### List All Questions [GET]
+        {
+            "name": "String",
+            "description": "String",
+            "location": "String",
+            "start_time": "2015-08-05T08:40:51.620Z",
+            "end_time": "2015-08-05T08:40:51.620Z",
+            "creator": {
+                "email": "mail@mail.com",
+                "name": "Abtin",
+            },
+            "id": "12789rwahsjdkln",
+        }
+### Update an Event [PUT]
++ Request (application/json)
+
+        {
+            "name": "String",
+            "description": "String",
+            "location": "String",
+            "start_time": "2015-08-05T08:40:51.620Z",
+            "end_time": "2015-08-05T08:40:51.620Z",
+        }
+
++ Response 201 (application/json)
+
+        {
+            "name": "String",
+            "description": "String",
+            "location": "String",
+            "start_time": "2015-08-05T08:40:51.620Z",
+            "end_time": "2015-08-05T08:40:51.620Z",
+            "creator": {
+                "email": "mail@mail.com",
+                "name": "Abtin",
+            },
+            "id": "12789rwahsjdkln",
+        }
+
+### Delete an Event [DELETE]
++ Response 200 (application/json)
+
+
+## Events Collection [/event]
+
+### List All Events [GET]
 
 + Response 200 (application/json)
 
         [
             {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 2048
-                    }, {
-                        "choice": "Python",
-                        "votes": 1024
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 512
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 256
-                    }
-                ]
+                "name": "String",
+                "description": "String",
+                "location": "String",
+                "start_time": "2015-08-05T08:40:51.620Z",
+                "end_time": "2015-08-05T08:40:51.620Z",
+                "creator": {
+                    "email": "mail@mail.com",
+                    "name": "Abtin",
+                },
+                "id": "12789rwahsjdkln",
             }
         ]
 
-### Create a New Question [POST]
+### Create a New Event [POST]
 
-You may create your own question using this action. It takes a JSON
-object containing a question and a collection of answers in the
-form of choices.
+You can create an event.
 
 + Request (application/json)
 
         {
-            "question": "Favourite programming language?",
-            "choices": [
-                "Swift",
-                "Python",
-                "Objective-C",
-                "Ruby"
-            ]
+            "name": "String",
+            "description": "String",
+            "location": "String",
+            "start_time": "2015-08-05T08:40:51.620Z",
+            "end_time": "2015-08-05T08:40:51.620Z",
         }
 
 + Response 201 (application/json)
 
-    + Headers
+        {
+            "name": "String",
+            "description": "String",
+            "location": "String",
+            "start_time": "2015-08-05T08:40:51.620Z",
+            "end_time": "2015-08-05T08:40:51.620Z",
+            "creator": {
+                "email": "mail@mail.com",
+                "name": "Abtin",
+            },
+            "id": "12789rwahsjdkln",
+        }
 
-            Location: /questions/2
+## RSVP [/event/${id}/rsvp/]
 
-    + Body
+### Get event RSVPs [GET]
++ Response 200 (application/json)
 
+        {
+            "yes": 2,
+            "no": 2,
+            "maybe": 2,
+            "no_response": 2,
+        }
+
+## Invitation [/invitation/{id}]
+
+### Respond to an event [POST]
+
+
++ Request (application/json)
+
+        {
+          "response": yes, no, maybe, no-response (enum),
+        }
++ Response 200 (application/json)
+
+
+## Invitations Collection [/invitation/]
+
+### Get invitations [GET]
+
++ Response 200 (application/json)
+
+        [
             {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 0
-                    }, {
-                        "choice": "Python",
-                        "votes": 0
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 0
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 0
-                    }
-                ]
+                "event_id": "asdfjkl123i912",
+                "response": yes, no, maybe, no-response (enum),
             }
+        ]
