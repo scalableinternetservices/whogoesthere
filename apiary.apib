@@ -101,6 +101,31 @@ You can create an event.
             "id": "12789rwahsjdkln",
         }
 
+## Comments Collection [/event/{id}/comment/]
+
+### Get all Comments [GET]
+
++ Response 200 (application/json)
+
+        [
+            {
+                "created_at": "2015-08-05T08:40:51.620Z",
+                "body": "String",
+                "author": {
+                    "email": "mail@mail.com",
+                    "name": "Abtin",
+                },
+            }
+        ]
+
+### Post Comment [POST]
+
++ Response 200 (application/json)
+
+        {
+            "body": "String",e
+        }
+
 ## RSVP [/event/${id}/rsvp/]
 
 ### Get event RSVPs [GET]
