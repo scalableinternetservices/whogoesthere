@@ -120,10 +120,21 @@ You can create an event.
 
 ### Post Comment [POST]
 
-+ Response 200 (application/json)
++ Request (application/json)
 
         {
-            "body": "String",e
+            "body": "String",
+        }
+
++ Response 201 (application/json)
+
+        {
+            "created_at": "2015-08-05T08:40:51.620Z",
+            "body": "String",
+            "author": {
+                "email": "mail@mail.com",
+                "name": "Abtin",
+            },
         }
 
 ## RSVP [/event/${id}/rsvp/]
