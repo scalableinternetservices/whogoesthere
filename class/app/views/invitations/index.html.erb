@@ -5,8 +5,8 @@
 <table>
   <thead>
     <tr>
-      <th>User</th>
       <th>Event</th>
+      <th>Invited User</th>
       <th>Response</th>
       <th colspan="3"></th>
     </tr>
@@ -28,4 +28,6 @@
 
 <br>
 
-<%= link_to 'New Invitation', new_invitation_path %>
+<%= link_to 'New Invitation', new_user_event_invitation_path %> <br><br>
+
+<%= link_to 'Back to event', user_event_path(@user,@event) %>
