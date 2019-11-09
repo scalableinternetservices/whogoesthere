@@ -16,6 +16,12 @@ class InvitationsController < ApplicationController
       @invitations = @event.invitations.all
     end
   end
+  
+  def indexbyuser
+  end
+  
+  def indexbyevent
+  end
 
   # GET /invitations/1
   # GET /invitations/1.json
