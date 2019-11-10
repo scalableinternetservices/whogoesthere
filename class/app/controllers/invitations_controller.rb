@@ -1,19 +1,25 @@
 class InvitationsController < ApplicationController
   before_action :set_invitation, only: [:show, :edit, :update, :destroy]
 
-  # GET /invitations
-  # GET /invitations.json
-  def index
+  # GET /users/1/invitations
+  # GET /users/1/invitations.json
+  def indexbyuser
     begin
       @user = User.find(params[:user_id])
-      @event = @user.events.find(params[:event_id])
+      @invitations = @user.invitations.all
+      rescue
+        head 403
+    end
+  end
+  
+  # GET /events/1/invitations
+  # GET /events/1/invitations.json
+  def indexbyevent
+    begin
+    @event = Event.find(params[:event_id])
+    @invitations = @event.invitations.all
     rescue
       head 403
-    end
-    if @event == nil
-      @invitations = nil
-    else
-      @invitations = @event.invitations.all
     end
   end
 
@@ -25,8 +31,7 @@ class InvitationsController < ApplicationController
   # GET /invitations/new
   def new
     begin
-      @user = User.find(params[:user_id])
-      @event = @user.events.find(params[:event_id])
+      @event = Event.find(params[:event_id])
     rescue
       head 403
     end
@@ -41,8 +46,7 @@ class InvitationsController < ApplicationController
   # POST /invitations.json
   def create
     begin
-      @user = User.find(params[:user_id])
-      @event = @user.events.find(params[:event_id])
+      @event = Event.find(params[:event_id])
     rescue
       head 403
     end
@@ -62,6 +66,11 @@ class InvitationsController < ApplicationController
   # PATCH/PUT /invitations/1
   # PATCH/PUT /invitations/1.json
   def update
+    begin
+      @invitation = Invitation.find(params[:id]);
+    rescue
+      head 403
+    end
     respond_to do |format|
       if @invitation.update(invitation_params)
         format.html { redirect_to @invitation, notice: 'Invitation was successfully updated.' }
@@ -81,7 +90,7 @@ class InvitationsController < ApplicationController
     @invitation.destroy
     respond_to do |format|
       format.html { redirect_to user_event_invitations_url(@user,@event), notice: 'Invitation was successfully destroyed.' }
-      format.json { head :no_content }
+      format.json { head :ok }
     end
   end
 
