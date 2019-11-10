@@ -5,8 +5,8 @@ class InvitationsController < ApplicationController
   # GET /users/1/invitations.json
   def indexbyuser
     begin
-      #@user = User.find(params[:user_id])
-      @invitation = invitations.find(params[:user_id])
+      @user = User.find(params[:user_id])
+      @invitations = @user.invitations.all #Invitation.find(params[:user_id])
       rescue
         head 403
     end
