@@ -1,26 +1,26 @@
 class InvitationsController < ApplicationController
   before_action :set_invitation, only: [:show, :edit, :update, :destroy]
 
-  # GET /invitations
-  # GET /invitations.json
-  def index
+  # GET /users/1/invitations
+  # GET /users/1/invitations.json
+  def indexbyuser
     begin
-      @user = User.find(params[:user_id])
-      @event = @user.events.find(params[:event_id])
+      #@user = User.find(params[:user_id])
+      @invitation = invitations.find(params[:user_id])
+      rescue
+        head 403
+    end
+  end
+  
+  # GET /events/1/invitations
+  # GET /events/1/invitations.json
+  def indexbyevent
+    begin
+    @event = Event.find(params[:event_id])
+    @invitations = @event.invitations.all
     rescue
       head 403
     end
-    if @event == nil
-      @invitations = nil
-    else
-      @invitations = @event.invitations.all
-    end
-  end
-  
-  def indexbyuser
-  end
-  
-  def indexbyevent
   end
 
   # GET /invitations/1
@@ -31,8 +31,7 @@ class InvitationsController < ApplicationController
   # GET /invitations/new
   def new
     begin
-      @user = User.find(params[:user_id])
-      @event = @user.events.find(params[:event_id])
+      @event = Event.find(params[:event_id])
     rescue
       head 403
     end
@@ -47,8 +46,7 @@ class InvitationsController < ApplicationController
   # POST /invitations.json
   def create
     begin
-      @user = User.find(params[:user_id])
-      @event = @user.events.find(params[:event_id])
+      @event = Event.find(params[:event_id])
     rescue
       head 403
     end
