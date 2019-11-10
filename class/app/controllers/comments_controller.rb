@@ -4,7 +4,12 @@ class CommentsController < ApplicationController
   # GET /comments
   # GET /comments.json
   def index
-    @comments = Comment.all
+    begin
+      @event = Event.find(params[:event_id])
+      @comments = @event.comments.all
+    rescue
+      head 403
+    end  
   end
 
   # GET /comments/1
@@ -14,7 +19,13 @@ class CommentsController < ApplicationController
 
   # GET /comments/new
   def new
-    @comment = Comment.new
+    begin
+      @event = Event.find(params[:event_id])
+    rescue
+      head 403
+    end
+    @comment = @event.comments.new
+
   end
 
   # GET /comments/1/edit
@@ -24,8 +35,12 @@ class CommentsController < ApplicationController
   # POST /comments
   # POST /comments.json
   def create
-    @comment = Comment.new(comment_params)
-
+    begin
+      @event = Event.find(params[:event_id])
+      @comment = @event.comments.new(comment_params)
+    rescue
+      head 403
+    end
     respond_to do |format|
       if @comment.save
         format.html { redirect_to @comment, notice: 'Comment was successfully created.' }
@@ -57,14 +72,18 @@ class CommentsController < ApplicationController
     @comment.destroy
     respond_to do |format|
       format.html { redirect_to comments_url, notice: 'Comment was successfully destroyed.' }
-      format.json { head :no_content }
+      format.json { head :ok }
     end
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_comment
-      @comment = Comment.find(params[:id])
+      begin
+        @comment = Comment.find(params[:id])
+      rescue
+        head 403
+      end
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

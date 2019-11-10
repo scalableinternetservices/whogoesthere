@@ -30,8 +30,8 @@ class EventsController < ApplicationController
 
   # GET /events/1/edit
   def edit
-    @user = User.find(params[:user_id])
-    @event = @user.events.find(params[:id])
+    #@user = User.find(params[:user_id])
+    @event = Event.find(params[:id])
   end
 
   # POST /events
@@ -54,7 +54,7 @@ class EventsController < ApplicationController
   # PATCH/PUT /events/1
   # PATCH/PUT /events/1.json
   def update
-    @user = User.find(params[:user_id])
+    #@user = User.find(params[:user_id])
     @event = Event.find(params[:id]);
     respond_to do |format|
       if @event.update(event_params)
