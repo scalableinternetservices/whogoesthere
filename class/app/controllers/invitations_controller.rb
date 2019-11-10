@@ -6,7 +6,7 @@ class InvitationsController < ApplicationController
   def indexbyuser
     begin
       @user = User.find(params[:user_id])
-      @invitations = @user.invitations.all #Invitation.find(params[:user_id])
+      @invitations = @user.invitations.all
       rescue
         head 403
     end
@@ -66,6 +66,11 @@ class InvitationsController < ApplicationController
   # PATCH/PUT /invitations/1
   # PATCH/PUT /invitations/1.json
   def update
+    begin
+      @invitation = Invitation.find(params[:id]);
+    rescue
+      head 403
+    end
     respond_to do |format|
       if @invitation.update(invitation_params)
         format.html { redirect_to @invitation, notice: 'Invitation was successfully updated.' }
@@ -85,7 +90,7 @@ class InvitationsController < ApplicationController
     @invitation.destroy
     respond_to do |format|
       format.html { redirect_to user_event_invitations_url(@user,@event), notice: 'Invitation was successfully destroyed.' }
-      format.json { head :no_content }
+      format.json { head :ok }
     end
   end
 

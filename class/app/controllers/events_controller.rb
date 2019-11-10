@@ -54,8 +54,11 @@ class EventsController < ApplicationController
   # PATCH/PUT /events/1
   # PATCH/PUT /events/1.json
   def update
-    #@user = User.find(params[:user_id])
-    @event = Event.find(params[:id]);
+    begin
+      @event = Event.find(params[:id]);
+    rescue 
+      head 403
+    end
     respond_to do |format|
       if @event.update(event_params)
         format.html { redirect_to user_events_path(@user), notice: 'Event was successfully updated.' }
