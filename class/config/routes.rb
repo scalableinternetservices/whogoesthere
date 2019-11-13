@@ -1,13 +1,13 @@
 
 Rails.application.routes.draw do
-  root 'users#index'
+  root 'users#index', defaults: {format: :json}
   get '/users/:user_id/invitations', to: 'invitations#indexbyuser', defaults: {format: :json}
   get '/events/:event_id/invitations', to: 'invitations#indexbyevent', defaults: {format: :json}
   resources :users, defaults: {format: :json} do
-    resources :invitations, shallow:true, except: ['new', 'create','index']
-    resources :events, shallow:true do
-        resources :invitations, shallow:true, except:['index']
-        resources :comments, shallow:true
+    resources :invitations, shallow:true, except: ['new', 'create','index'], defaults: {format: :json}
+    resources :events, shallow:true, defaults: {format: :json} do
+        resources :invitations, shallow:true, except:['index'], defaults: {format: :json}
+        resources :comments, shallow:true, defaults: {format: :json}
 
     end
   end
