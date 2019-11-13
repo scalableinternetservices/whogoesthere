@@ -60,7 +60,7 @@
         <!-- Create new user -->
         <request subst="true">
           <dyn_variable name="created_user_id" re="Location: http://.*/users/(.*)\r"/>
-          <http url='/users' version='1.1' contents="authenticity_token=%%_authenticity_token%%&amp;user%5Bname%5D=gwyn&amp;user%5Bemail%5D=test%%ts_user_server:get_unique_id%%@gmail.com" method='POST'></http>
+          <http url='/users' version='1.1' contents="authenticity_token=%%_authenticity_token%%&amp;user%5Bname%5D=whogoesthere&amp;user%5Bemail%5D=test%%ts_user_server:get_unique_id%%@gmail.com" method='POST'></http>
         </request>
 
         <!-- Redirect to /users/created_user_id -->
@@ -79,7 +79,7 @@
 
         <!-- Update user -->
         <request subst="true">
-          <http url='/users/%%_created_user_id%%' version='1.1' contents="authenticity_token=%%_authenticity_token%%&amp;user%5Bname%5D=new-gwyn&amp;user%5Bemail%5D=%%_created_user_id%%@gmail.com" method='PUT'></http>
+          <http url='/users/%%_created_user_id%%' version='1.1' contents="authenticity_token=%%_authenticity_token%%&amp;user%5Bname%5D=new-whogoesthere&amp;user%5Bemail%5D=%%_created_user_id%%@gmail.com" method='PUT'></http>
         </request>
 
         <!-- Redirect to /users/created_user_id -->
@@ -95,7 +95,7 @@
          
         <!-- Go to /users/created_user_id/events -->
         <request subst="true">
-          <http url='/users/%%_created_user_id%%/events.json'></http>
+          <http url='/users/%%_created_user_id%%/events'></http>
         </request>
 
         <thinktime random="true" value="2"/>
@@ -115,14 +115,14 @@
 
         <!-- Redirect to /users/created_user_id/events -->
         <request subst="true">
-          <http url='/users/%%_created_user_id%%/events.json'></http>
+          <http url='/users/%%_created_user_id%%/events'></http>
         </request>
 
         <thinktime random="true" value="2"/>
 
         <!-- Go to /events/created_event_id -->
         <request subst="true">
-          <http url='/events/%%_created_event_id%%.json'></http>
+          <http url='/events/%%_created_event_id%%'></http>
         </request>
 
         <thinktime random="true" value="2"/>
@@ -137,6 +137,45 @@
         <!-- PUT /events/created_event_id/ -->
         <request subst="true">
           <http url='/events/%%_created_event_id%%' version='1.1' contents="authenticity_token=%%_authenticity_token%%&amp;event%5Buser_id%5D=%%_created_user_id%%&amp;event%5Bname%5D=Yogaaa&amp;event%5Bdescription%5D=Downdawg&amp;event%5Blocation%5D=Park&amp;event%5Bstart_time(1i)%5D=2019&amp;event%5Bstart_time(2i)%5D=11&amp;event%5Bstart_time(3i)%5D=12&amp;event%5Bstart_time(4i)%5D=23&amp;event%5Bstart_time(5i)%5D=24&amp;event%5Bend_time(1i)%5D=2019&amp;event%5Bend_time(2i)%5D=11&amp;event%5Bend_time(3i)%5D=12&amp;event%5Bend_time(4i)%5D=23&amp;event%5Bend_time(5i)%5D=24" method='PUT'></http>
+        </request>
+
+        <!-- Redirect to /users/created_user_id/events -->
+        <request subst="true">
+          <http url='/users/%%_created_user_id%%/events'></http>
+        </request>
+
+        <thinktime random="true" value="2"/>
+
+        <!-- Go to /events/created_event_id -->
+        <request subst="true">
+          <http url='/events/%%_created_event_id%%'></http>
+        </request>
+
+        <thinktime random="true" value="2"/>
+
+      </transaction>
+
+      <transaction name="Create_Invitations">
+
+        <!-- Go to /events/created_event_id/invitations -->
+        <request subst="true">
+          <http url='/events/%%_created_event_id%%/invitations'></http>
+        </request>
+
+        <thinktime random="true" value="2"/>
+
+        <!-- Go to /invitations/new -->
+
+        <!--
+        <request subst="true">
+          <http url='/invitations/new' contents="authenticity_token=%%_authenticity_token%%&amp;user%5Bid%5D=%%_created_user_id%%&amp;event%5Bid%5D=%%_created_event_id%%" method='GET'></http>
+        </request> -->
+
+        <thinktime random="true" value="2"/>
+
+        <!-- Delete event -->
+        <request subst="true">
+          <http url='/events/%%_created_event_id%%' version='1.1' method='DELETE'></http>
         </request>
 
         <!-- Delete user -->
