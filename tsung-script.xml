@@ -51,6 +51,7 @@
         <thinktime random="true" value="2"/>
 
         <!-- Go to /users/new -->
+        <!-- FLAGGED -->
         <request subst="true">
           <http url='/users/new.html'></http>
         </request>
@@ -71,6 +72,7 @@
         <thinktime random="true" value="2"/>
 
         <!-- Go to /users/created_user_id/edit -->
+        <!-- FLAGGED -->
         <request subst="true">
           <http url='/users/%%_created_user_id%%/edit.html'></http>
         </request>
@@ -101,6 +103,7 @@
         <thinktime random="true" value="2"/>
 
         <!-- Go to /users/created_user_id/events/new -->
+        <!-- FLAGGED -->
         <request subst="true">
           <http url='/users/%%_created_user_id%%/events/new.html'></http>
         </request>
@@ -128,6 +131,7 @@
         <thinktime random="true" value="2"/>
 
         <!-- Go to /events/created_event_id/edit -->
+        <!-- FLAGGED -->
         <request subst="true">
           <http url='/events/%%_created_event_id%%/edit'></http>
         </request>
@@ -164,14 +168,19 @@
 
         <thinktime random="true" value="2"/>
 
-        <!-- Go to /invitations/new -->
-
-        <!--
+        <!-- Go to events/created_event_id/invitations/new -->
+        <!-- FLAGGED -->
         <request subst="true">
-          <http url='/invitations/new' contents="authenticity_token=%%_authenticity_token%%&amp;user%5Bid%5D=%%_created_user_id%%&amp;event%5Bid%5D=%%_created_event_id%%" method='GET'></http>
-        </request> -->
+          <http url='/events/%%_created_event_id%%/invitations/new' method='GET'></http>
+        </request>
 
-        <thinktime random="true" value="2"/>
+        <thinktime random="true" value="6"/>
+
+        <!-- Create an invitations -->
+        <request subst="true">
+          <dyn_variable name="created_invitation_id" re='"id\":(.*),\"user_id\"'/>
+          <http url='/events/%%_created_event_id%%/invitations' contents="authenticity_token=%%_authenticity_token%%&amp;invitation%5Buser_id%5D=%%_created_user_id%%&amp;invitation%5Bevent_id%5D=%%_created_event_id%%" method='POST'></http>
+        </request>
 
         <!-- Delete event -->
         <request subst="true">
