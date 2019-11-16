@@ -5,81 +5,96 @@ HOST: http://polls.apiblueprint.org/
 
 It's Whogoesthere.
 
-## Event [/event/{id}]
+## Event [/events/{id}]
 ### Get One Event [GET]
 + Response 200 (application/json)
 
         {
+            "id": 123,
             "name": "String",
             "description": "String",
             "location": "String",
-            "start_time": "2015-08-05T08:40:51.620Z",
-            "end_time": "2015-08-05T08:40:51.620Z",
-            "creator": {
-                "email": "mail@mail.com",
-                "name": "Abtin",
-            },
-            "id": "12789rwahsjdkln",
+            "start_time": "2015-08-05T08:40:51.000Z",
+            "end_time": "2015-08-05T08:40:51.000Z",
+            "user-id": 456,
+            "created_at":"2019-11-16T18:36:28.612Z",
+            "updated_at":"2019-11-16T18:36:28.612Z",
+            "url":"http://whogoesthere.c2y2jbcu8i.us-west-2.elasticbeanstalk.com/events/641",
         }
 ### Update an Event [PUT]
 + Request (application/json)
 
         {
+            "event[name]": "String",
+            "event[description]": "String",
+            "event[location]": "String",
+            "event[start_time(1i)]": 2019,
+            "event[start_time(2i)]": 08,
+            "event[start_time(3i)]": 16,
+            "event[start_time(4i)]": 09,
+            "event[start_time(5i)]": 30,
+            "event[end_time(1i)]": 2019,
+            "event[end_time(2i)]": 08,
+            "event[end_time(3i)]": 16,
+            "event[end_time(4i)]": 10,
+            "event[end_time(5i)]": 30,
+            "event[user_id]": 11,
+        }
+
++ Response 200 (application/json)
+
+        {
+            "id": 641,
             "name": "String",
             "description": "String",
             "location": "String",
             "start_time": "2015-08-05T08:40:51.620Z",
             "end_time": "2015-08-05T08:40:51.620Z",
-            "invited_users": [
-            	{
-            		"invitee": {
-            			"email":"mail@mail.com",
-            			"name": "`Someone",
-            		}
-            	}
-            ]
+            "user-id": 456,
+            "created_at":"2019-11-16T18:36:28.612Z",
+            "updated_at":"2019-11-16T18:36:28.612Z",
+            "url":"http://whogoesthere.c2y2jbcu8i.us-west-2.elasticbeanstalk.com/events/641",
+
+        }
+
+## Event [/events/{id}/invitations]
+### Create an invitation to the event [POST]
+
++ Request (application/json)
+        {
+            "invitation[user_id]": 775, #Note: user_id is the invitee
         }
 
 + Response 201 (application/json)
-
         {
-            "name": "String",
-            "description": "String",
-            "location": "String",
-            "start_time": "2015-08-05T08:40:51.620Z",
-            "end_time": "2015-08-05T08:40:51.620Z",
-            "creator": {
-                "email": "mail@mail.com",
-                "name": "Abtin",
-            },
-            "id": "12789rwahsjdkln",
+            "id": 50,
+            "user-id": 775, #Note: user_id is the invitee
+            "event-id": 641,
+            "created_at":"2019-11-16T18:36:28.612Z",
+            "updated_at":"2019-11-16T18:36:28.612Z",
+            "url":"http://whogoesthere.c2y2jbcu8i.us-west-2.elasticbeanstalk.com/events/641/invitations",
         }
+## Event [/events/{id}/invitations]
+### Get all invitations to the event [GET]
++ Response 200 (application/json)
+        [
+            {
+            "id": 50,
+            "user-id": 775, #Note: user_id is the invitee
+            "event-id": 641,
+            "created_at":"2019-11-16T18:36:28.612Z",
+            "updated_at":"2019-11-16T18:36:28.612Z",
+            "url":"http://whogoesthere.c2y2jbcu8i.us-west-2.elasticbeanstalk.com/events/641/invitations",
+            }
+        ]
+
+## Event [/events/{id}/edit]
+### GET a form to edit event [GET]
 
 ### Delete an Event [DELETE]
 + Response 200 (application/json)
 
-
-## Events Collection [/event]
-
-### List All Events [GET]
-
-+ Response 200 (application/json)
-
-        [
-            {
-                "name": "String",
-                "description": "String",
-                "location": "String",
-                "start_time": "2015-08-05T08:40:51.620Z",
-                "end_time": "2015-08-05T08:40:51.620Z",
-                "creator": {
-                    "email": "mail@mail.com",
-                    "name": "Abtin",
-                },
-                "id": "12789rwahsjdkln",
-            }
-        ]
-
+## User Collection [/users/{id}/events]
 ### Create a New Event [POST]
 
 You can create an event.
@@ -87,106 +102,232 @@ You can create an event.
 + Request (application/json)
 
         {
-            "name": "String",
-            "description": "String",
-            "location": "String",
-            "start_time": "2015-08-05T08:40:51.620Z",
-            "end_time": "2015-08-05T08:40:51.620Z",
-            "invited_users": [
-            	{
-            		"invitee": {
-            			"email":"mail@mail.com",
-            			"name": "`Someone",
-            		}
-            	}
-            ]
+            "event[name]": "String",
+            "event[description]": "String",
+            "event[location]": "String",
+            "event[start_time(1i)]": 2019,
+            "event[start_time(2i)]": 08,
+            "event[start_time(3i)]": 16,
+            "event[start_time(4i)]": 09,
+            "event[start_time(5i)]": 30,
+            "event[end_time(1i)]": 2019,
+            "event[end_time(2i)]": 08,
+            "event[end_time(3i)]": 16,
+            "event[end_time(4i)]": 10,
+            "event[end_time(5i)]": 30,
+            "event[user_id]": 11,
         }
 
 + Response 201 (application/json)
 
         {
+            "id": 641,
             "name": "String",
             "description": "String",
             "location": "String",
             "start_time": "2015-08-05T08:40:51.620Z",
             "end_time": "2015-08-05T08:40:51.620Z",
-            "creator": {
-                "email": "mail@mail.com",
-                "name": "Abtin",
-            },
-            "id": "12789rwahsjdkln",
+            "user-id": 456,
+            "created_at":"2019-11-16T18:36:28.612Z",
+            "updated_at":"2019-11-16T18:36:28.612Z",
+            "url":"http://whogoesthere.c2y2jbcu8i.us-west-2.elasticbeanstalk.com/users/775/events",
         }
 
-## Comments Collection [/event/{id}/comment/]
+## User Collection [/users/{id}/events/new]
+### GET a form to crete a new event [GET]
 
-### Get all Comments [GET]
+## User Collection [/users/{id}/new]
+## [GET]
+
+## User Collection [/users/{id}/edit]
+## [GET]
+
+## User Collection [/users/{id}]
+## Get a user [GET]
+
++ Response 200 (application/json)
+        {
+            "id": 641,
+            "name": "String",
+            "email": "a@aol.com",
+            "created_at":"2019-11-16T18:36:28.612Z",
+            "updated_at":"2019-11-16T18:36:28.612Z",
+            "url":"http://whogoesthere.c2y2jbcu8i.us-west-2.elasticbeanstalk.com/users/775",
+        }
+
+## User Collection [/users/{id}]
+### Update a user [PUT]
++ Request (application/json)
+
+        {
+            "user[id]": 641,
+            "user[name]": "String",
+            "user[email]": "a@aol.com",
+        }
+
++ Response 200 (application/json)
+        {
+                "id": 641,
+                "name": "String",
+                "email": "a@aol.com",
+                "created_at":"2019-11-16T18:36:28.612Z",
+                "updated_at":"2019-11-16T18:36:28.612Z",
+                "url":"http://whogoesthere.c2y2jbcu8i.us-west-2.elasticbeanstalk.com/users/775",
+        }
+
+## User Collection [/users/{id}]
+### Delete a User [DELETE]
++ Response 200 (application/json)
+
+## User [/users/]
+## Create a new user [POST]
+
++ Request (application/json)
+
+        {
+            "user[id]": 641,
+            "user[name]": "String",
+            "user[email]": "a@aol.com",
+        }
++ Response 201 (application/json)
+
+        {
+            "id": 641,
+            "name": "String",
+            "email": "a@aol.com",
+            "created_at":"2019-11-16T18:36:28.612Z",
+            "updated_at":"2019-11-16T18:36:28.612Z",
+            "url":"http://whogoesthere.c2y2jbcu8i.us-west-2.elasticbeanstalk.com/users/775",
+        }
+
+## Get a list of all users [GET]
++ Response 200 (application/json)
+    [
+        {
+            "id": 641,
+            "name": "String",
+            "email": "a@aol.com",
+            "created_at":"2019-11-16T18:36:28.612Z",
+            "updated_at":"2019-11-16T18:36:28.612Z",
+            "url":"http://whogoesthere.c2y2jbcu8i.us-west-2.elasticbeanstalk.com/users",
+        }
+    ]
+
+## Comments Collection [/events/{id}/comments/]
+
+### Get all Comments for an event [GET]
 
 + Response 200 (application/json)
 
         [
             {
+                "id": 2,
+                "user_id": 775, 
+                "event_id": 641,
+                "body": "updatedMMessage",
                 "created_at": "2015-08-05T08:40:51.620Z",
-                "body": "String",
-                "author": {
-                    "email": "mail@mail.com",
-                    "name": "Abtin",
-                },
+                "updated_at":"2019-11-16T18:36:28.612Z",
+                "url":"http://whogoesthere.c2y2jbcu8i.us-west-2.elasticbeanstalk.com/comments/2",
             }
         ]
 
-### Post Comment [POST]
+## Comments Collection [/events/{id}/comments/new]
+### GET a form to crete a new comment [GET]
+
+## Comments Collection [/comments/{id}/edit]
+## [GET]
+
+### Post a Comment [POST]
 
 + Request (application/json)
 
         {
-            "body": "String",
+            "comment[user_id]": 775,
+            "comment[body]": "Message",
         }
 
 + Response 201 (application/json)
 
         {
+            "id": 2, 
+            "event_id": 641,
+            "body": "Message",
             "created_at": "2015-08-05T08:40:51.620Z",
-            "body": "String",
-            "author": {
-                "email": "mail@mail.com",
-                "name": "Abtin",
-            },
+            "updated_at":"2019-11-16T18:36:28.612Z",
+            "url":"http://whogoesthere.c2y2jbcu8i.us-west-2.elasticbeanstalk.com/comments/2",
         }
 
-## RSVP [/event/${id}/rsvp/]
-
-### Get event RSVPs [GET]
-+ Response 200 (application/json)
-
-        {
-            "yes": 2,
-            "no": 2,
-            "maybe": 2,
-            "no_response": 2,
-        }
-
-## Invitation [/invitation/{id}]
-
-### Respond to an event [POST]
-
+### Update a Comment [PUT]
 
 + Request (application/json)
 
         {
-          "response": yes, no, maybe, no-response (enum),
+            "comment[body]": "udpatedMessage",
         }
-+ Response 200 (application/json)
-
-
-## Invitations Collection [/invitation/]
-
-### Get invitations [GET]
 
 + Response 200 (application/json)
 
-        [
-            {
-                "event_id": "asdfjkl123i912",
-                "response": yes, no, maybe, no-response (enum),
-            }
-        ]
+        {
+            "id": 2, 
+            "event_id": 641,
+            "body": "updatedMMessage",
+            "created_at": "2015-08-05T08:40:51.620Z",
+            "updated_at":"2019-11-16T18:36:28.612Z",
+            "url":"http://whogoesthere.c2y2jbcu8i.us-west-2.elasticbeanstalk.com/comments/2",
+        }
+
+## Comments Collection [/comments/{id}]
+## Get a Comment [GET]
++ Response 200 (application/json)
+
+        {
+            "id": 2,
+            "user_id": 775, 
+            "event_id": 641,
+            "body": "updatedMMessage",
+            "created_at": "2015-08-05T08:40:51.620Z",
+            "updated_at":"2019-11-16T18:36:28.612Z",
+            "url":"http://whogoesthere.c2y2jbcu8i.us-west-2.elasticbeanstalk.com/comments/2",
+        }
+
+## Comments Collection [/comments/{id}]
+### Delete a Comment [DELETE]
++ Response 200 (application/json)
+
+## Invitation [/invitations/{id}]
+
+### Get invitation [GET]
+
++ Response 200 (application/json)
+        {
+            "id": 50,
+            "user-id": 775, #Note: user_id is the invitee
+            "event-id": 641,
+            "created_at":"2019-11-16T18:36:28.612Z",
+            "updated_at":"2019-11-16T18:36:28.612Z",
+            "url":"http://whogoesthere.c2y2jbcu8i.us-west-2.elasticbeanstalk.com/invitations/50",
+        }
+
+## Invitation [/invitations/{id}/edit]
+## [GET]
+
+## Invitation [/invitations/{id}]
+## Update an invitation to rsvp [PUT]
++ Request (application/json)
+        {
+            "invitation[response]": "yes",
+        }
+
++ Response 200 (application/json)
+        {
+            "id": 50,
+            "user-id": 775, #Note: user_id is the invitee
+            "event-id": 641,
+            "created_at":"2019-11-16T18:36:28.612Z",
+            "updated_at":"2019-11-16T18:36:28.612Z",
+            "url":"http://whogoesthere.c2y2jbcu8i.us-west-2.elasticbeanstalk.com/invitations/50",
+        }
+
+## Invitation [/invitations/{id}]
+### Delete an Invitation [DELETE]
++ Response 200 (application/json)
