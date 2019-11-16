@@ -5,8 +5,13 @@ class InvitationsController < ApplicationController
   # GET /users/1/invitations.json
   def indexbyuser
     begin
+      @event_ids = []
       @user = User.find(params[:user_id])
       @invitations = @user.invitations.all
+      for @invitation in @invitations
+        @event_ids << @invitation.event_id
+      end
+      @events = Event.find(@event_ids)
       rescue
         head 403
     end
@@ -16,11 +21,18 @@ class InvitationsController < ApplicationController
   # GET /events/1/invitations.json
   def indexbyevent
     begin
+    @user_ids = []
     @event = Event.find(params[:event_id])
     @invitations = @event.invitations.all
+    #@user_ids = @invitaions.map{|invitation| invitaion.user_id}
+    for @invitation in @invitations
+      @user_ids << @invitation.user_id
+    end
+    @users = User.find(@user_ids)
     rescue
       head 403
     end
+
   end
 
   # GET /invitations/1
@@ -29,7 +41,7 @@ class InvitationsController < ApplicationController
   end
 
   # GET /invitations/new
-  def new
+  def newf
     begin
       @event = Event.find(params[:event_id])
     rescue
@@ -50,6 +62,8 @@ class InvitationsController < ApplicationController
     rescue
       head 403
     end
+    print "invitaion_params print: "
+    print invitation_params
     @invitation = @event.invitations.new(invitation_params)
 
     respond_to do |format|
