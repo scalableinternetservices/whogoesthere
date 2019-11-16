@@ -57,6 +57,9 @@ It's Whogoesthere.
 
         }
 
+## Event [/events/{id}/invitations/new]
+### Create a New Invitation [GET]
+
 ## Event [/events/{id}/invitations]
 ### Create an invitation to the event [POST]
 
@@ -95,7 +98,7 @@ It's Whogoesthere.
 + Response 200 (application/json)
 
 ## User Collection [/users/{id}/events]
-### Create a New Event [POST]
+### Create a New Event [GET]
 
 You can create an event.
 
@@ -215,29 +218,7 @@ You can create an event.
 
 ## Comments Collection [/events/{id}/comments/]
 
-### Get all Comments for an event [GET]
-
-+ Response 200 (application/json)
-
-        [
-            {
-                "id": 2,
-                "user_id": 775, 
-                "event_id": 641,
-                "body": "updatedMMessage",
-                "created_at": "2015-08-05T08:40:51.620Z",
-                "updated_at":"2019-11-16T18:36:28.612Z",
-                "url":"http://whogoesthere.c2y2jbcu8i.us-west-2.elasticbeanstalk.com/comments/2",
-            }
-        ]
-
-## Comments Collection [/events/{id}/comments/new]
-### GET a form to crete a new comment [GET]
-
-## Comments Collection [/comments/{id}/edit]
-## [GET]
-
-### Post a Comment [POST]
+### Post a Comment [POST] 
 
 + Request (application/json)
 
@@ -275,6 +256,28 @@ You can create an event.
             "updated_at":"2019-11-16T18:36:28.612Z",
             "url":"http://whogoesthere.c2y2jbcu8i.us-west-2.elasticbeanstalk.com/comments/2",
         }
+
+### Get all Comments for an event [GET]
+
++ Response 200 (application/json)
+
+        [
+            {
+                "id": 2,
+                "user_id": 775, 
+                "event_id": 641,
+                "body": "updatedMMessage",
+                "created_at": "2015-08-05T08:40:51.620Z",
+                "updated_at":"2019-11-16T18:36:28.612Z",
+                "url":"http://whogoesthere.c2y2jbcu8i.us-west-2.elasticbeanstalk.com/comments/2",
+            }
+        ]
+
+## Comments Collection [/events/{id}/comments/new]
+### GET a form to crete a new comment [GET]
+
+## Comments Collection [/comments/{id}/edit]
+## [GET]
 
 ## Comments Collection [/comments/{id}]
 ## Get a Comment [GET]
