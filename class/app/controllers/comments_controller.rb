@@ -4,12 +4,17 @@ class CommentsController < ApplicationController
   # GET /comments
   # GET /comments.json
   def index
-    begin
+    #begin  
+      @user_ids = []
       @event = Event.find(params[:event_id])
       @comments = @event.comments.all
-    rescue
-      head 403
-    end  
+      for @comment in @comments
+        @user_ids << @comment.user_id
+      end
+      @users = User.find(@user_ids)
+    #rescue
+      #head 403
+    #end  
   end
 
   # GET /comments/1
