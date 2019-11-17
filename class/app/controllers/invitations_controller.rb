@@ -1,5 +1,5 @@
 class InvitationsController < ApplicationController
-  before_action :set_invitation, only: [:show, :edit, :update, :destroy]
+  before_action :set_invitation, only: [:show, :edit, :update]
 
   # GET /users/1/invitations
   # GET /users/1/invitations.json
@@ -99,11 +99,16 @@ class InvitationsController < ApplicationController
   # DELETE /invitations/1
   # DELETE /invitations/1.json
   def destroy
-    @event = @invitation.event
-    @user = @event.user
-    @invitation.destroy
+    begin
+      @invitation = Invitation.find(params[:id]);
+    rescue
+      head 200
+    end
+    if( @invitation != nil)
+      @invitation.destroy
+    end
     respond_to do |format|
-      format.html { redirect_to user_event_invitations_url(@user,@event), notice: 'Invitation was successfully destroyed.' }
+      format.html { redirect_to user_event_invitations_url, notice: 'Invitation was successfully destroyed.' }
       format.json { head :ok }
     end
   end

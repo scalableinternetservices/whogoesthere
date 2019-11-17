@@ -1,5 +1,5 @@
 class CommentsController < ApplicationController
-  before_action :set_comment, only: [:show, :edit, :update, :destroy]
+  before_action :set_comment, only: [:show, :edit, :update]
 
   # GET /comments
   # GET /comments.json
@@ -74,7 +74,14 @@ class CommentsController < ApplicationController
   # DELETE /comments/1
   # DELETE /comments/1.json
   def destroy
-    @comment.destroy
+    begin
+      @comment = Comment.find(params[:id]);
+    rescue
+      head 200
+    end
+    if( @comment != nil)
+      @comment.destroy
+    end
     respond_to do |format|
       format.html { redirect_to comments_url, notice: 'Comment was successfully destroyed.' }
       format.json { head :ok }
