@@ -14,8 +14,20 @@
 
   <!-- 1 user every 10 seconds --> 
   <load>
-    <arrivalphase phase="1" duration="10" unit="second">
+    <arrivalphase phase="1" duration="10" unit="second" wait_all_sessions_end="true">
       <users arrivalrate="1" unit="second"></users>
+    </arrivalphase>
+    <arrivalphase phase="2" duration="10" unit="second" wait_all_sessions_end="true">
+      <users arrivalrate="2" unit="second"></users>
+    </arrivalphase>
+    <arrivalphase phase="4" duration="10" unit="second" wait_all_sessions_end="true">
+      <users arrivalrate="4" unit="second"></users>
+    </arrivalphase>
+    <arrivalphase phase="8" duration="10" unit="second" wait_all_sessions_end="true">
+      <users arrivalrate="8" unit="second"></users>
+    </arrivalphase>
+    <arrivalphase phase="16" duration="10" unit="second" wait_all_sessions_end="true">
+      <users arrivalrate="16" unit="second"></users>
     </arrivalphase>
   </load>
 
@@ -176,11 +188,25 @@
 
         <thinktime random="true" value="6"/>
 
-        <!-- Create an invitations -->
+        <!-- Create new invitation (to self) -->
         <request subst="true">
-          <dyn_variable name="created_invitation_id" re='"id\":(.*),\"user_id\"'/>
-          <http url='/events/%%_created_event_id%%/invitations' contents="authenticity_token=%%_authenticity_token%%&amp;invitation%5Buser_id%5D=%%_created_user_id%%&amp;invitation%5Bevent_id%5D=%%_created_event_id%%" method='POST'></http>
+          <dyn_variable name="created_invitation_id" re='"id\":(.*),\"user_id'/>
+          <http url='/events/%%_created_event_id%%/invitations' contents="authenticity_token=%%_authenticity_token%%&amp;invitation%5Buser_id%5D=%%_created_user_id%%" method='POST'></http>
         </request>
+
+        <thinktime random="true" value="2"/>
+
+        <!-- Create new comment -->
+        <request subst="true">
+          <dyn_variable name="created_comment_id" re='"id\":(.*),\"user_id'/>
+          <http url='/events/%%_created_event_id%%/comments' contents="authenticity_token=%%_authenticity_token%%&amp;comment%5Buser_id%5D=%%_created_user_id%%&amp;comment%5Bbody%5D=message" method='POST'></http>
+        </request>
+
+        <!-- Delete invitation -->
+        <!--
+        <request subst="true">
+          <http url='/comments/%%_created_event_id%%' version='1.1' method='DELETE'></http>
+        </request> -->
 
         <!-- Delete event -->
         <request subst="true">
