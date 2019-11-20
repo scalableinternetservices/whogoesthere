@@ -43,12 +43,6 @@
     <session name="Hit All Endpoints" probability="100" type="ts_http">
       
       <transaction name="Create_New_User">
-      
-        <!-- Authenticity token -->
-        <request>
-          <dyn_variable name="authenticity_token"/>
-          <http url='/users/new.html'></http>
-        </request>
 
         <!-- Grab and format authenticity token -->
         <setdynvars sourcetype="eval" code="fun({Pid,DynVars})->{ok,Val}=ts_dynvars:lookup(authenticity_token,DynVars),re:replace(Val,&quot;[+]&quot;,&quot;%2B&quot;,[global, {return,list}]) end.">
@@ -58,14 +52,6 @@
         <!-- Homepage -->
         <request subst="true">
           <http url='/'></http>
-        </request>
-
-        <thinktime random="true" value="2"/>
-
-        <!-- Go to /users/new -->
-        <!-- FLAGGED -->
-        <request subst="true">
-          <http url='/users/new.html'></http>
         </request>
 
         <thinktime random="true" value="4"/>
@@ -79,14 +65,6 @@
         <!-- Redirect to /users/created_user_id -->
         <request subst="true">
           <http url='/users/%%_created_user_id%%'></http>
-        </request>
-
-        <thinktime random="true" value="2"/>
-
-        <!-- Go to /users/created_user_id/edit -->
-        <!-- FLAGGED -->
-        <request subst="true">
-          <http url='/users/%%_created_user_id%%/edit.html'></http>
         </request>
 
         <thinktime random="true" value="4"/>
@@ -113,12 +91,6 @@
         </request>
 
         <thinktime random="true" value="2"/>
-
-        <!-- Go to /users/created_user_id/events/new -->
-        <!-- FLAGGED -->
-        <request subst="true">
-          <http url='/users/%%_created_user_id%%/events/new.html'></http>
-        </request>
 
         <thinktime random="true" value="10"/>
 
@@ -176,14 +148,6 @@
         <!-- Go to /events/created_event_id/invitations -->
         <request subst="true">
           <http url='/events/%%_created_event_id%%/invitations'></http>
-        </request>
-
-        <thinktime random="true" value="2"/>
-
-        <!-- Go to events/created_event_id/invitations/new -->
-        <!-- FLAGGED -->
-        <request subst="true">
-          <http url='/events/%%_created_event_id%%/invitations/new' method='GET'></http>
         </request>
 
         <thinktime random="true" value="6"/>
