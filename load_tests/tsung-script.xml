@@ -114,12 +114,6 @@
           <http url='/events/%%_created_event_id%%'></http>
         </request>
 
-        <!-- Go to /events/created_event_id/edit -->
-        <!-- FLAGGED -->
-        <request subst="true">
-          <http url='/events/%%_created_event_id%%/edit'></http>
-        </request>
-
         <!-- PUT /events/created_event_id/ -->
         <request subst="true">
           <http url='/events/%%_created_event_id%%' version='1.1' contents="authenticity_token=%%_authenticity_token%%&amp;event%5Buser_id%5D=%%_created_user_id%%&amp;event%5Bname%5D=Yogaaa&amp;event%5Bdescription%5D=Downdawg&amp;event%5Blocation%5D=Park&amp;event%5Bstart_time(1i)%5D=2019&amp;event%5Bstart_time(2i)%5D=11&amp;event%5Bstart_time(3i)%5D=12&amp;event%5Bstart_time(4i)%5D=23&amp;event%5Bstart_time(5i)%5D=24&amp;event%5Bend_time(1i)%5D=2019&amp;event%5Bend_time(2i)%5D=11&amp;event%5Bend_time(3i)%5D=12&amp;event%5Bend_time(4i)%5D=23&amp;event%5Bend_time(5i)%5D=24" method='PUT'></http>
