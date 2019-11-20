@@ -100,7 +100,7 @@
 
         <!-- Submit new event -->
         <request subst="true">
-          <dyn_variable name="created_event_id" re='"id\":(.*),\"name'/> 
+          <dyn_variable name="created_event_id" re='"id\":(.*),\"name\":\"Yoga'/> 
           <http url='/users/%%_created_user_id%%/events' version='1.1' contents="authenticity_token=%%_authenticity_token%%&amp;event%5Buser_id%5D=%%_created_user_id%%&amp;event%5Bname%5D=Yoga&amp;event%5Bdescription%5D=Downdawg&amp;event%5Blocation%5D=Park&amp;event%5Bstart_time(1i)%5D=2019&amp;event%5Bstart_time(2i)%5D=11&amp;event%5Bstart_time(3i)%5D=12&amp;event%5Bstart_time(4i)%5D=23&amp;event%5Bstart_time(5i)%5D=24&amp;event%5Bend_time(1i)%5D=2019&amp;event%5Bend_time(2i)%5D=11&amp;event%5Bend_time(3i)%5D=12&amp;event%5Bend_time(4i)%5D=23&amp;event%5Bend_time(5i)%5D=24" method='POST'></http>
         </request>
 
