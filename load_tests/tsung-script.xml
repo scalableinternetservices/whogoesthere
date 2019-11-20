@@ -20,14 +20,23 @@
     <arrivalphase phase="2" duration="10" unit="second" wait_all_sessions_end="true">
       <users arrivalrate="2" unit="second"></users>
     </arrivalphase>
-    <arrivalphase phase="4" duration="10" unit="second" wait_all_sessions_end="true">
+    <arrivalphase phase="3" duration="10" unit="second" wait_all_sessions_end="true">
       <users arrivalrate="4" unit="second"></users>
     </arrivalphase>
-    <arrivalphase phase="8" duration="10" unit="second" wait_all_sessions_end="true">
+    <arrivalphase phase="4" duration="10" unit="second" wait_all_sessions_end="true">
       <users arrivalrate="8" unit="second"></users>
     </arrivalphase>
-    <arrivalphase phase="16" duration="10" unit="second" wait_all_sessions_end="true">
+    <arrivalphase phase="5" duration="10" unit="second" wait_all_sessions_end="true">
       <users arrivalrate="16" unit="second"></users>
+    </arrivalphase>
+    <arrivalphase phase="6" duration="10" unit="second" wait_all_sessions_end="true">
+      <users arrivalrate="32" unit="second"></users>
+    </arrivalphase>
+    <arrivalphase phase="7" duration="10" unit="second" wait_all_sessions_end="true">
+      <users arrivalrate="64" unit="second"></users>
+    </arrivalphase>
+    <arrivalphase phase="8" duration="10" unit="second" wait_all_sessions_end="true">
+      <users arrivalrate="128" unit="second"></users>
     </arrivalphase>
   </load>
 
@@ -44,6 +53,11 @@
       
       <transaction name="Create_New_User">
 
+        <request>
+          <dyn_variable name="authenticity_token"/>
+          <http url='/users/new.html'></http>
+        </request>
+
         <!-- Grab and format authenticity token -->
         <setdynvars sourcetype="eval" code="fun({Pid,DynVars})->{ok,Val}=ts_dynvars:lookup(authenticity_token,DynVars),re:replace(Val,&quot;[+]&quot;,&quot;%2B&quot;,[global, {return,list}]) end.">
           <var name="authenticity_token"/>
@@ -53,8 +67,6 @@
         <request subst="true">
           <http url='/'></http>
         </request>
-
-        <thinktime random="true" value="4"/>
         
         <!-- Create new user -->
         <request subst="true">
@@ -67,8 +79,6 @@
           <http url='/users/%%_created_user_id%%'></http>
         </request>
 
-        <thinktime random="true" value="4"/>
-
         <!-- Update user -->
         <request subst="true">
           <http url='/users/%%_created_user_id%%' version='1.1' contents="authenticity_token=%%_authenticity_token%%&amp;user%5Bname%5D=new-whogoesthere&amp;user%5Bemail%5D=%%_created_user_id%%@gmail.com" method='PUT'></http>
@@ -79,8 +89,6 @@
           <http url='/users/%%_created_user_id%%'></http>
         </request>
 
-        <thinktime random="true" value="2"/>
-
       </transaction>
 
       <transaction name="Create_New_Event">
@@ -89,10 +97,6 @@
         <request subst="true">
           <http url='/users/%%_created_user_id%%/events'></http>
         </request>
-
-        <thinktime random="true" value="2"/>
-
-        <thinktime random="true" value="10"/>
 
         <!-- Submit new event -->
         <request subst="true">
@@ -105,22 +109,16 @@
           <http url='/users/%%_created_user_id%%/events'></http>
         </request>
 
-        <thinktime random="true" value="2"/>
-
         <!-- Go to /events/created_event_id -->
         <request subst="true">
           <http url='/events/%%_created_event_id%%'></http>
         </request>
-
-        <thinktime random="true" value="2"/>
 
         <!-- Go to /events/created_event_id/edit -->
         <!-- FLAGGED -->
         <request subst="true">
           <http url='/events/%%_created_event_id%%/edit'></http>
         </request>
-
-        <thinktime random="true" value="4"/>
 
         <!-- PUT /events/created_event_id/ -->
         <request subst="true">
@@ -132,14 +130,10 @@
           <http url='/users/%%_created_user_id%%/events'></http>
         </request>
 
-        <thinktime random="true" value="2"/>
-
         <!-- Go to /events/created_event_id -->
         <request subst="true">
           <http url='/events/%%_created_event_id%%'></http>
         </request>
-
-        <thinktime random="true" value="2"/>
 
       </transaction>
 
@@ -150,15 +144,11 @@
           <http url='/events/%%_created_event_id%%/invitations'></http>
         </request>
 
-        <thinktime random="true" value="6"/>
-
         <!-- Create new invitation (to self) -->
         <request subst="true">
           <dyn_variable name="created_invitation_id" re='"id\":(.*),\"user_id'/>
           <http url='/events/%%_created_event_id%%/invitations' contents="authenticity_token=%%_authenticity_token%%&amp;invitation%5Buser_id%5D=%%_created_user_id%%" method='POST'></http>
         </request>
-
-        <thinktime random="true" value="2"/>
 
         <!-- Create new comment -->
         <request subst="true">
