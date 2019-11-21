@@ -51,7 +51,7 @@
   <sessions>
     <session name="Hit All Endpoints" probability="100" type="ts_http">
       
-      <transaction name="Create_New_User">
+      <transaction name="setup">
 
         <request>
           <dyn_variable name="authenticity_token"/>
@@ -62,11 +62,6 @@
         <setdynvars sourcetype="eval" code="fun({Pid,DynVars})->{ok,Val}=ts_dynvars:lookup(authenticity_token,DynVars),re:replace(Val,&quot;[+]&quot;,&quot;%2B&quot;,[global, {return,list}]) end.">
           <var name="authenticity_token"/>
         </setdynvars>
-
-        <!-- Homepage -->
-        <request subst="true">
-          <http url='/'></http>
-        </request>
         
         <!-- Create new user -->
         <request subst="true">
@@ -74,24 +69,15 @@
           <http url='/users' version='1.1' contents="authenticity_token=%%_authenticity_token%%&amp;user%5Bname%5D=whogoesthere&amp;user%5Bemail%5D=test%%ts_user_server:get_unique_id%%@gmail.com" method='POST'></http>
         </request>
 
-        <!-- Redirect to /users/created_user_id -->
+        <!-- Create second new user -->
         <request subst="true">
-          <http url='/users/%%_created_user_id%%'></http>
-        </request>
-
-        <!-- Update user -->
-        <request subst="true">
-          <http url='/users/%%_created_user_id%%' version='1.1' contents="authenticity_token=%%_authenticity_token%%&amp;user%5Bname%5D=new-whogoesthere&amp;user%5Bemail%5D=%%_created_user_id%%@gmail.com" method='PUT'></http>
-        </request>
-
-        <!-- Redirect to /users/created_user_id -->
-        <request subst="true">
-          <http url='/users/%%_created_user_id%%'></http>
+          <dyn_variable name="created_user_id_2" re="Location: http://.*/users/(.*)\r"/>
+          <http url='/users' version='1.1' contents="authenticity_token=%%_authenticity_token%%&amp;user%5Bname%5D=whogoesthere&amp;user%5Bemail%5D=test%%ts_user_server:get_unique_id%%@mail.com" method='POST'></http>
         </request>
 
       </transaction>
 
-      <transaction name="Create_New_Event">
+      <transaction name="create_new_event">
          
         <!-- Go to /users/created_user_id/events -->
         <request subst="true">
@@ -114,34 +100,28 @@
           <http url='/events/%%_created_event_id%%'></http>
         </request>
 
-        <!-- PUT /events/created_event_id/ -->
-        <request subst="true">
-          <http url='/events/%%_created_event_id%%' version='1.1' contents="authenticity_token=%%_authenticity_token%%&amp;event%5Buser_id%5D=%%_created_user_id%%&amp;event%5Bname%5D=Yogaaa&amp;event%5Bdescription%5D=Downdawg&amp;event%5Blocation%5D=Park&amp;event%5Bstart_time(1i)%5D=2019&amp;event%5Bstart_time(2i)%5D=11&amp;event%5Bstart_time(3i)%5D=12&amp;event%5Bstart_time(4i)%5D=23&amp;event%5Bstart_time(5i)%5D=24&amp;event%5Bend_time(1i)%5D=2019&amp;event%5Bend_time(2i)%5D=11&amp;event%5Bend_time(3i)%5D=12&amp;event%5Bend_time(4i)%5D=23&amp;event%5Bend_time(5i)%5D=24" method='PUT'></http>
-        </request>
-
-        <!-- Redirect to /users/created_user_id/events -->
-        <request subst="true">
-          <http url='/users/%%_created_user_id%%/events'></http>
-        </request>
-
-        <!-- Go to /events/created_event_id -->
-        <request subst="true">
-          <http url='/events/%%_created_event_id%%'></http>
-        </request>
-
       </transaction>
 
-      <transaction name="Create_Invitations">
+      <transaction name="create_invitation">
 
         <!-- Go to /events/created_event_id/invitations -->
         <request subst="true">
           <http url='/events/%%_created_event_id%%/invitations'></http>
         </request>
 
-        <!-- Create new invitation (to self) -->
+        <!-- Create new invitation to second user -->
         <request subst="true">
           <dyn_variable name="created_invitation_id" re='"id\":(.*),\"user_id'/>
-          <http url='/events/%%_created_event_id%%/invitations' contents="authenticity_token=%%_authenticity_token%%&amp;invitation%5Buser_id%5D=%%_created_user_id%%" method='POST'></http>
+          <http url='/events/%%_created_event_id%%/invitations' contents="authenticity_token=%%_authenticity_token%%&amp;invitation%5Buser_id%5D=%%_created_user_id_2%%" method='POST'></http>
+        </request>
+
+      </transaction>
+
+      <transaction name="create_comment">
+
+        <!-- Go to /events/created_event_id/comments -->
+        <request subst="true">
+          <http url='/events/%%_created_event_id%%/comments'></http>
         </request>
 
         <!-- Create new comment -->
@@ -150,11 +130,14 @@
           <http url='/events/%%_created_event_id%%/comments' contents="authenticity_token=%%_authenticity_token%%&amp;comment%5Buser_id%5D=%%_created_user_id%%&amp;comment%5Bbody%5D=message" method='POST'></http>
         </request>
 
-        <!-- Delete invitation -->
-        <!--
+        <!-- Go to /events/created_event_id/comments -->
         <request subst="true">
-          <http url='/comments/%%_created_event_id%%' version='1.1' method='DELETE'></http>
-        </request> -->
+          <http url='/events/%%_created_event_id%%/comments'></http>
+        </request>
+
+      </transaction>
+
+      <transaction name="teardown">
 
         <!-- Delete event -->
         <request subst="true">
@@ -165,8 +148,13 @@
         <request subst="true">
           <http url='/users/%%_created_user_id%%' version='1.1' method='DELETE'></http>
         </request>
+
+        <!-- Delete second user -->
+        <request subst="true">
+          <http url='/users/%%_created_user_id_2%%' version='1.1' method='DELETE'></http>
+        </request>
     
-    </transaction>
+      </transaction>
 
     </session>
   </sessions>
