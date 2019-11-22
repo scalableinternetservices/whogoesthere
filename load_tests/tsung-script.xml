@@ -54,6 +54,7 @@
       <transaction name="setup">
 
         <request>
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <dyn_variable name="authenticity_token"/>
           <http url='/users/new.html'></http>
         </request>
@@ -65,12 +66,14 @@
         
         <!-- Create new user -->
         <request subst="true">
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <dyn_variable name="created_user_id" re="Location: http://.*/users/(.*)\r"/>
           <http url='/users' version='1.1' contents="authenticity_token=%%_authenticity_token%%&amp;user%5Bname%5D=whogoesthere&amp;user%5Bemail%5D=test%%ts_user_server:get_unique_id%%@gmail.com" method='POST'></http>
         </request>
 
         <!-- Create second new user -->
         <request subst="true">
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <dyn_variable name="created_user_id_2" re="Location: http://.*/users/(.*)\r"/>
           <http url='/users' version='1.1' contents="authenticity_token=%%_authenticity_token%%&amp;user%5Bname%5D=whogoesthere&amp;user%5Bemail%5D=test%%ts_user_server:get_unique_id%%@mail.com" method='POST'></http>
         </request>
@@ -81,22 +84,26 @@
          
         <!-- Go to /users/created_user_id/events -->
         <request subst="true">
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <http url='/users/%%_created_user_id%%/events'></http>
         </request>
 
         <!-- Submit new event -->
         <request subst="true">
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <dyn_variable name="created_event_id" re='"id\":(.*),\"name\":\"Yoga'/> 
           <http url='/users/%%_created_user_id%%/events' version='1.1' contents="authenticity_token=%%_authenticity_token%%&amp;event%5Buser_id%5D=%%_created_user_id%%&amp;event%5Bname%5D=Yoga&amp;event%5Bdescription%5D=Downdawg&amp;event%5Blocation%5D=Park&amp;event%5Bstart_time(1i)%5D=2019&amp;event%5Bstart_time(2i)%5D=11&amp;event%5Bstart_time(3i)%5D=12&amp;event%5Bstart_time(4i)%5D=23&amp;event%5Bstart_time(5i)%5D=24&amp;event%5Bend_time(1i)%5D=2019&amp;event%5Bend_time(2i)%5D=11&amp;event%5Bend_time(3i)%5D=12&amp;event%5Bend_time(4i)%5D=23&amp;event%5Bend_time(5i)%5D=24" method='POST'></http>
         </request>
 
         <!-- Redirect to /users/created_user_id/events -->
         <request subst="true">
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <http url='/users/%%_created_user_id%%/events'></http>
         </request>
 
         <!-- Go to /events/created_event_id -->
         <request subst="true">
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <http url='/events/%%_created_event_id%%'></http>
         </request>
 
@@ -106,11 +113,13 @@
 
         <!-- Go to /events/created_event_id/invitations -->
         <request subst="true">
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <http url='/events/%%_created_event_id%%/invitations'></http>
         </request>
 
         <!-- Create new invitation to second user -->
         <request subst="true">
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <dyn_variable name="created_invitation_id" re='"id\":(.*),\"user_id'/>
           <http url='/events/%%_created_event_id%%/invitations' contents="authenticity_token=%%_authenticity_token%%&amp;invitation%5Buser_id%5D=%%_created_user_id_2%%" method='POST'></http>
         </request>
@@ -121,17 +130,20 @@
 
         <!-- Go to /events/created_event_id/comments -->
         <request subst="true">
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <http url='/events/%%_created_event_id%%/comments'></http>
         </request>
 
         <!-- Create new comment -->
         <request subst="true">
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <dyn_variable name="created_comment_id" re='"id\":(.*),\"user_id'/>
           <http url='/events/%%_created_event_id%%/comments' contents="authenticity_token=%%_authenticity_token%%&amp;comment%5Buser_id%5D=%%_created_user_id%%&amp;comment%5Bbody%5D=message" method='POST'></http>
         </request>
 
         <!-- Go to /events/created_event_id/comments -->
         <request subst="true">
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <http url='/events/%%_created_event_id%%/comments'></http>
         </request>
 
@@ -141,16 +153,19 @@
 
         <!-- Delete event -->
         <request subst="true">
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <http url='/events/%%_created_event_id%%' version='1.1' method='DELETE'></http>
         </request>
 
         <!-- Delete user -->
         <request subst="true">
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <http url='/users/%%_created_user_id%%' version='1.1' method='DELETE'></http>
         </request>
 
         <!-- Delete second user -->
         <request subst="true">
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <http url='/users/%%_created_user_id_2%%' version='1.1' method='DELETE'></http>
         </request>
     
