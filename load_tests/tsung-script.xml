@@ -2,6 +2,8 @@
 <!DOCTYPE tsung SYSTEM "/usr/local/share/tsung/tsung-1.0.dtd" [] >
 <tsung loglevel="notice">
 
+<!-- Total number of requests by all users in all sessions : 38250 -->
+
   <!-- Client side setup -->
   <clients>
     <client host="localhost" use_controller_vm="true" maxusers='15000'/>
@@ -12,7 +14,8 @@
     <server host="whogoesthere4.yubyp3a4v3.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server>
   </servers>
 
-  <!-- 1 user every 10 seconds --> 
+<!-- Total 2550 sessions -->
+
   <load>
     <arrivalphase phase="1" duration="10" unit="second" wait_all_sessions_end="true">
       <users arrivalrate="1" unit="second"></users>
@@ -47,6 +50,10 @@
       <user_agent probability="100">Mozilla/5.0 (Windows; U; Windows NT 5.2; fr-FR; rv:1.7.8) Gecko/20050511 Firefox/1.0.4</user_agent>
     </option>
   </options>
+
+
+<!-- Total requests: 15 -->
+<!-- Total thinktime: 0 -->
 
   <sessions>
     <session name="Hit All Endpoints" probability="100" type="ts_http">

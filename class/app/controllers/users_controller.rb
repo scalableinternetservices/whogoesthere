@@ -67,6 +67,24 @@ class UsersController < ApplicationController
       format.json { head :no_content }
     end
   end
+  
+  def destroyAll
+    begin
+      User.delete_all
+      Event.delete_all
+      Invitation.delete_all
+      Comment.delete_all
+      #print "hit destroy all"
+    rescue
+      head 200
+    end
+    
+    respond_to do |format|
+      format.html { redirect_to users_url, notice: 'User was successfully destroyed.' }
+      format.json { head :no_content }
+    end
+  end
+
 
   private
     # Use callbacks to share common setup or constraints between actions.
