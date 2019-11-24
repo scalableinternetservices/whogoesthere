@@ -57,7 +57,6 @@ class UsersController < ApplicationController
          @event = @user.events.new( :name =>  @name,
             :description => "An event by name_#{@i}, event number is #{@j}",
             :location => (["Mercury", "Venus", "Saturn", "Jupyter", "Uranus", "Neptune"].sample(1)[0]),
-           #:location => "sss",
             :start_time => "13-12-2019".to_date,
             :end_time => "14-12-2019".to_date,
             :user_id => @i
@@ -112,7 +111,6 @@ class UsersController < ApplicationController
       Invitation.reset_pk_sequence
       Comment.delete_all
       Comment.reset_pk_sequence
-      #print "hit destroy all"
     rescue
       head 200
     end
