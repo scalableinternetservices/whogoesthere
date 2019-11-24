@@ -42,7 +42,7 @@ class UsersController < ApplicationController
     @i = 1
     while @i <= (params[:count]).to_i do
        @user = User.create(:name => "name_#{@i}", :email => "name_#{@i}@test.com")
-       @event_count = rand(10)
+       @event_count = rand(2 .. 10)
        @j = 1
        while @j <= @event_count do
          @name = "name_#{@i}_event_#{@j}"
