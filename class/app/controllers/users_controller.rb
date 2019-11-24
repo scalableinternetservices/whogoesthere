@@ -71,9 +71,13 @@ class UsersController < ApplicationController
   def destroyAll
     begin
       User.delete_all
+      User.reset_pk_sequence
       Event.delete_all
+      Event.reset_pk_sequence
       Invitation.delete_all
+      Invitation.reset_pk_sequence
       Comment.delete_all
+      Comment.reset_pk_sequence
       #print "hit destroy all"
     rescue
       head 200
