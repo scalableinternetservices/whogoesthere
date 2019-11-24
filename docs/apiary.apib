@@ -181,6 +181,7 @@ You can create an event.
 ## User Collection [/users/{id}]
 ### Delete a User [DELETE]
 + Response 200 (application/json)
++ Response 204 if {id} not present/already deleted (application/json)
 
 ## User [/users/]
 ## Create a new user [POST]
@@ -334,3 +335,12 @@ You can create an event.
 ## Invitation [/invitations/{id}]
 ### Delete an Invitation [DELETE]
 + Response 200 (application/json)
+
+
+## Load Testing Endpoints 
+## Clear the database [/users/deleteall]
++ Response 200 (application/json)
+
+## Preload the database with users [/users/createbulk/{number_to_create}]
++ Response 200 (application/json)
++ Response 204 if already deleted (application/json)
