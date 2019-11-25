@@ -36,6 +36,39 @@ class UsersController < ApplicationController
       end
     end
   end
+  
+  
+  def createBulk
+    @i = 1
+    while @i <= (params[:count]).to_i do
+       @user = User.create(:name => "name_#{@i}", :email => "name_#{@i}@test.com")
+       @event_count = rand(2 .. 10)
+       @j = 1
+       while @j <= @event_count do
+         @name = "name_#{@i}_event_#{@j}"
+         
+         if @j == @event_count
+           @name = "last_event"
+         end
+
+         if @j == 1
+           @name = "first_event"
+         end
+         @event = @user.events.new( :name =>  @name,
+            :description => "An event by name_#{@i}, event number is #{@j}",
+            :location => (["Mercury", "Venus", "Saturn", "Jupyter", "Uranus", "Neptune"].sample(1)[0]),
+            :start_time => "13-12-2019".to_date,
+            :end_time => "14-12-2019".to_date,
+            :user_id => @i
+        )
+        @event.save
+        @j += 1
+       end
+       @i += 1
+
+    end
+    
+  end
 
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
@@ -71,10 +104,13 @@ class UsersController < ApplicationController
   def destroyAll
     begin
       User.delete_all
+      User.reset_pk_sequence
       Event.delete_all
+      Event.reset_pk_sequence
       Invitation.delete_all
+      Invitation.reset_pk_sequence
       Comment.delete_all
-      #print "hit destroy all"
+      Comment.reset_pk_sequence
     rescue
       head 200
     end
