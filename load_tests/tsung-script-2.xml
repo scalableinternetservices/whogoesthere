@@ -18,7 +18,7 @@
 
   <load>
     <arrivalphase phase="1" duration="10" unit="second" wait_all_sessions_end="true">
-      <users arrivalrate="1" unit="second"></users>
+      <users arrivalrate="64" unit="second"></users>
     </arrivalphase>
   </load>
 
@@ -55,7 +55,7 @@
         </setdynvars>
 
         <!-- Set the number of users in the database -->
-        <setdynvars sourcetype="value" value="100">
+        <setdynvars sourcetype="value" value="1000">
           <var name="total_num_users" />
         </setdynvars>
 
@@ -82,6 +82,7 @@
           </setdynvars>
           <if var="event_probability" gte="8">
             <request subst="true">
+              <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
               <http url='/events/%%_event_num%%'></http>
             </request>
             <for from="1" to="%%_total_num_users%%" var="user_num">
@@ -166,6 +167,7 @@
 
         <!-- Display event page for one invitation -->
         <request subst="true">
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <http url='/events/%%_created_event_id%%/invitations'></http>
         </request>
 
