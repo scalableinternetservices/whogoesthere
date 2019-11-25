@@ -88,9 +88,6 @@
               <setdynvars sourcetype="random_number" start="0" end="1" >
                 <var name="invite_probability" />
               </setdynvars>
-              <setdynvars sourcetype="random_number" start="0" end="1" >
-                <var name="comment_probability" />
-              </setdynvars>
               <if var="event_probability" eq="1">
                 <request subst="true">
                   <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
@@ -103,6 +100,9 @@
                 <thinktime value="5" random="true"></thinktime>
               </if>
             </for>
+            <setdynvars sourcetype="random_number" start="0" end="1" >
+              <var name="comment_probability" />
+            </setdynvars>
             <if var="comment_probability" eq="1">
               <request subst="true">
                 <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
