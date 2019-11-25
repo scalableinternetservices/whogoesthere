@@ -63,7 +63,7 @@
 
       <transaction name="test">
 
-        <!-- Go to /users/user_id/events -->
+        <!-- Fetch all my events -->
         <!-- Grab the first and last event ids -->
         <request subst="true">
           <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
@@ -72,7 +72,7 @@
           <http url='/users/%%_user_id%%/events'></http>
         </request>
 
-        <thinktime value="5" random="true"></thinktime>
+        <thinktime value="2" random="true"></thinktime>
 
         <!-- Loop through all my events and choose a subset to invite people to -->
         <!-- For each event in my subset, choose a subset of people to invite -->
@@ -88,7 +88,8 @@
               <setdynvars sourcetype="random_number" start="0" end="1" >
                 <var name="invite_probability" />
               </setdynvars>
-              <if var="event_probability" eq="1">
+              <if var="invite_probability" eq="1">
+                <thinktime value="5" random="true"></thinktime>
                 <request subst="true">
                   <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
                   <http url='/events/%%_event_num%%/invitations'></http>
@@ -97,13 +98,13 @@
                   <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
                   <http url='/events/%%_event_num%%/invitations' contents="authenticity_token=%%_authenticity_token%%&amp;invitation%5Buser_id%5D=%%_user_num%%" method='POST'></http>
                 </request>
-                <thinktime value="5" random="true"></thinktime>
               </if>
             </for>
             <setdynvars sourcetype="random_number" start="0" end="1" >
               <var name="comment_probability" />
             </setdynvars>
             <if var="comment_probability" eq="1">
+              <thinktime value="5" random="true"></thinktime>
               <request subst="true">
                 <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
                 <http url='/events/%%_event_num%%/comments'></http>
@@ -139,21 +140,19 @@
           </if>
         </for>
 
+        <thinktime value="2" random="true"></thinktime>
+
         <!-- Fetch all my invitations -->
         <request subst="true">
           <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <http url='/users/%%_user_id%%/invitations'></http>
         </request>
 
-        <!-- RSVP to certain invitations -->
-
-        <thinktime value="5" random="true"></thinktime>
-
-        <!-- Fetch all my comments -->
+        <!-- RSVP to certain invitations 
         <request subst="true">
           <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
-          <http url='/users/%%_user_id%%/comments'></http>
-        </request>
+          <http url='/events/%%_event_num%%/invitations' contents="authenticity_token=%%_authenticity_token%%&amp;invitation%5Bresponse%5D=yes" method='PUT'></http>
+        </request> -->
 
       </transaction>
 
