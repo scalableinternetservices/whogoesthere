@@ -58,11 +58,15 @@
 
       <!-- Create ten invitations -->
       <for from="1" to="10" incr="1" var="guest_id">
+
+        <thinktime value="5" random="true"></thinktime>
+
         <request subst="true">
           <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <dyn_variable name="created_invitation_id" re='"id\":(.{1,30}),\"user_id'/>
           <http url='/events/%%_created_event_id%%/invitations' contents="invitation%5Buser_id%5D=%%_guest_id%%" method='POST'></http>
         </request>
+
       </for>
 
       <!-- Redirect to list of all my invitations -->
@@ -87,11 +91,15 @@
         <http url='/users/%%_user_id%%/events'></http>
       </request>
 
+      <thinktime value="2" random="true"></thinktime>
+
       <!-- Display a single event -->
       <request subst="true">
         <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
         <http url='/events/%%_first_event_id%%'></http>
       </request>
+
+      <thinktime value="2" random="true"></thinktime>
 
        <!-- Display the list of guests -->
       <request subst="true">
@@ -100,11 +108,21 @@
         <http url='/events/%%_first_event_id%%/invitations'></http>
       </request>
 
+      <!-- RSVP to one invitation 
+      <request subst="true"> 
+        <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
+        <http url='/invitations/%%_invitation_id%%' contents="invitation%5Bresponse%5D=yes" method='PUT'></http>
+      </request> -->
+
+      <thinktime value="2" random="true"></thinktime>
+
       <!-- Display the list of comments -->
       <request subst="true">
         <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
         <http url='/events/%%_first_event_id%%/comments'></http>
       </request>
+
+      <thinktime value="5" random="true"></thinktime>
 
       <!-- Submit a comment -->
       <request subst="true">
@@ -119,13 +137,6 @@
       </request>
 
       </session>
-
-      <!-- RSVP to one invitation 
-      <request subst="true"> 
-        <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
-        <http url='/invitations/%%_invitation_id%%' contents="invitation%5Bresponse%5D=yes" method='PUT'></http>
-      </request> -->
-
 
   </sessions>
 </tsung>
