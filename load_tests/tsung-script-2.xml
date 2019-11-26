@@ -9,7 +9,7 @@
 
   <!-- Server side setup -->
   <servers>
-    <server host="whogoesthere5.3zzyfjeguw.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server>
+    <server host="whogoesthere8.u3mfcffzat.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server>
   </servers>
 
   <load>
@@ -30,17 +30,6 @@
     <session name="overload_database" probability="100" type="ts_http">
       
       <transaction name="setup">
-
-        <request>
-          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
-          <dyn_variable name="authenticity_token"/>
-          <http url='/users/new.html'></http>
-        </request>
-
-        <!-- Grab and format authenticity token -->
-        <setdynvars sourcetype="eval" code="fun({Pid,DynVars})->{ok,Val}=ts_dynvars:lookup(authenticity_token,DynVars),re:replace(Val,&quot;[+]&quot;,&quot;%2B&quot;,[global, {return,list}]) end.">
-          <var name="authenticity_token"/>
-        </setdynvars>
 
         <!-- Set the user id -->
         <setdynvars sourcetype="erlang" callback="ts_user_server:get_unique_id">
@@ -92,7 +81,7 @@
                 </request>
                 <request subst="true">
                   <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
-                  <http url='/events/%%_event_num%%/invitations' contents="authenticity_token=%%_authenticity_token%%&amp;invitation%5Buser_id%5D=%%_user_num%%" method='POST'></http>
+                  <http url='/events/%%_event_num%%/invitations' contents="invitation%5Buser_id%5D=%%_user_num%%" method='POST'></http>
                 </request>
               </if>
             </for>
@@ -107,7 +96,7 @@
               </request>
               <request subst="true">
                 <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
-                <http url='/events/%%_event_num%%/comments' contents="authenticity_token=%%_authenticity_token%%&amp;comment%5Buser_id%5D=%%_user_id%%&amp;comment%5Bbody%5D=message" method='POST'></http>
+                <http url='/events/%%_event_num%%/comments' contents="comment%5Buser_id%5D=%%_user_id%%&amp;comment%5Bbody%5D=message" method='POST'></http>
               </request>
               <request subst="true">
                 <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
@@ -126,7 +115,7 @@
             <thinktime value="10" random="true"></thinktime>
             <request subst="true">
               <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
-              <http url='/users/%%_user_id%%/events' version='1.1' contents="authenticity_token=%%_authenticity_token%%&amp;event%5Buser_id%5D=%%_user_id%%&amp;event%5Bname%5D=Yoga&amp;event%5Bdescription%5D=Downdawg&amp;event%5Blocation%5D=Park&amp;event%5Bstart_time(1i)%5D=2019&amp;event%5Bstart_time(2i)%5D=11&amp;event%5Bstart_time(3i)%5D=12&amp;event%5Bstart_time(4i)%5D=23&amp;event%5Bstart_time(5i)%5D=24&amp;event%5Bend_time(1i)%5D=2019&amp;event%5Bend_time(2i)%5D=11&amp;event%5Bend_time(3i)%5D=12&amp;event%5Bend_time(4i)%5D=23&amp;event%5Bend_time(5i)%5D=24" method='POST'></http>
+              <http url='/users/%%_user_id%%/events' version='1.1' contents="event%5Buser_id%5D=%%_user_id%%&amp;event%5Bname%5D=Yoga&amp;event%5Bdescription%5D=Downdawg&amp;event%5Blocation%5D=Park&amp;event%5Bstart_time(1i)%5D=2019&amp;event%5Bstart_time(2i)%5D=11&amp;event%5Bstart_time(3i)%5D=12&amp;event%5Bstart_time(4i)%5D=23&amp;event%5Bstart_time(5i)%5D=24&amp;event%5Bend_time(1i)%5D=2019&amp;event%5Bend_time(2i)%5D=11&amp;event%5Bend_time(3i)%5D=12&amp;event%5Bend_time(4i)%5D=23&amp;event%5Bend_time(5i)%5D=24" method='POST'></http>
             </request>
             <request subst="true">
               <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
@@ -141,7 +130,7 @@
         <request subst="true">
           <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <dyn_variable name="created_event_id" re='"id\":(.{1,10}),\"name\":\"Yoga'/>
-          <http url='/users/%%_user_id%%/events' version='1.1' contents="authenticity_token=%%_authenticity_token%%&amp;event%5Buser_id%5D=%%_user_id%%&amp;event%5Bname%5D=Yoga&amp;event%5Bdescription%5D=Downdawg&amp;event%5Blocation%5D=Park&amp;event%5Bstart_time(1i)%5D=2019&amp;event%5Bstart_time(2i)%5D=11&amp;event%5Bstart_time(3i)%5D=12&amp;event%5Bstart_time(4i)%5D=23&amp;event%5Bstart_time(5i)%5D=24&amp;event%5Bend_time(1i)%5D=2019&amp;event%5Bend_time(2i)%5D=11&amp;event%5Bend_time(3i)%5D=12&amp;event%5Bend_time(4i)%5D=23&amp;event%5Bend_time(5i)%5D=24" method='POST'></http>
+          <http url='/users/%%_user_id%%/events' version='1.1' contents="event%5Buser_id%5D=%%_user_id%%&amp;event%5Bname%5D=Yoga&amp;event%5Bdescription%5D=Downdawg&amp;event%5Blocation%5D=Park&amp;event%5Bstart_time(1i)%5D=2019&amp;event%5Bstart_time(2i)%5D=11&amp;event%5Bstart_time(3i)%5D=12&amp;event%5Bstart_time(4i)%5D=23&amp;event%5Bstart_time(5i)%5D=24&amp;event%5Bend_time(1i)%5D=2019&amp;event%5Bend_time(2i)%5D=11&amp;event%5Bend_time(3i)%5D=12&amp;event%5Bend_time(4i)%5D=23&amp;event%5Bend_time(5i)%5D=24" method='POST'></http>
         </request>
 
         <thinktime value="5" random="true"></thinktime>
@@ -150,7 +139,7 @@
         <request subst="true">
           <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <dyn_variable name="created_invitation_id" re='"id\":(.{1,30}),\"user_id'/>
-          <http url='/events/%%_created_event_id%%/invitations' contents="authenticity_token=%%_authenticity_token%%&amp;invitation%5Buser_id%5D=%%_user_id%%" method='POST'></http>
+          <http url='/events/%%_created_event_id%%/invitations' contents="invitation%5Buser_id%5D=%%_user_id%%" method='POST'></http>
         </request>
 
         <!-- Fetch all my invitations -->
@@ -174,7 +163,7 @@
         <!-- RSVP to one invitation -->
         <request subst="true"> 
           <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
-          <http url='/invitations/%%_created_invitation_id%%' contents="authenticity_token=%%_authenticity_token%%&amp;invitation%5Bresponse%5D=yes" method='PUT'></http>
+          <http url='/invitations/%%_created_invitation_id%%' contents="invitation%5Bresponse%5D=yes" method='PUT'></http>
         </request>
 
       </transaction>
