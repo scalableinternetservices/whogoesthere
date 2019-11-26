@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+<!DOCTYPE tsung SYSTEM "/usr/local/share/tsung/tsung-1.0.dtd" [] >
+<tsung loglevel="debug">
+
+  <!-- Client side setup -->
+  <clients>
+    <client host="localhost" use_controller_vm="true" maxusers='15000'/>
+  </clients>
+
+  <!-- Server side setup -->
+  <servers>
+    <server host="whogoesthere8.u3mfcffzat.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server>
+  </servers>
+
+  <load>
+    <arrivalphase phase="1" duration="10" unit="second" wait_all_sessions_end="true">
+      <users arrivalrate="1" unit="second"></users>
+    </arrivalphase>
+  </load>
+
+  <options>
+    <!-- Set connection timeout to 2 seconds -->
+    <option name="global_ack_timeout" value="2000"></option>
+    <option type="ts_http" name="user_agent">
+      <user_agent probability="100">Mozilla/5.0 (Windows; U; Windows NT 5.2; fr-FR; rv:1.7.8) Gecko/20050511 Firefox/1.0.4</user_agent>
+    </option>
+  </options>
+
+  <sessions>
+
+    <session name="create_event" probability="50" type="ts_http">
+
+      <!-- Set the user id -->
+      <setdynvars sourcetype="erlang" callback="ts_user_server:get_unique_id">
+        <var name="user_id" />
+      </setdynvars>
+
+      <!-- Fetch all my events -->
+      <request subst="true">
+        <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
+        <http url='/users/%%_user_id%%/events'></http>
+      </request>
+
+      <thinktime value="10" random="true"></thinktime>
+
+      <!-- Create new event -->
+      <request subst="true">
+        <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
+        <dyn_variable name="created_event_id" re='"id\":(.{1,10}),\"name\":\"Yoga'/>
+        <http url='/users/%%_user_id%%/events' version='1.1' contents="event%5Buser_id%5D=%%_user_id%%&amp;event%5Bname%5D=Yoga&amp;event%5Bdescription%5D=Downdog&amp;event%5Blocation%5D=Park&amp;event%5Bstart_time(1i)%5D=2019&amp;event%5Bstart_time(2i)%5D=11&amp;event%5Bstart_time(3i)%5D=12&amp;event%5Bstart_time(4i)%5D=23&amp;event%5Bstart_time(5i)%5D=24&amp;event%5Bend_time(1i)%5D=2019&amp;event%5Bend_time(2i)%5D=11&amp;event%5Bend_time(3i)%5D=12&amp;event%5Bend_time(4i)%5D=23&amp;event%5Bend_time(5i)%5D=24" method='POST'></http>
+      </request>
+
+      <!-- Redirect to list of all my events -->
+      <request subst="true">
+        <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
+        <http url='/users/%%_user_id%%/events'></http>
+      </request>
+
+      <!-- Create ten invitations -->
+      <for from="1" to="10" incr="1" var="guest_id">
+        <request subst="true">
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
+          <dyn_variable name="created_invitation_id" re='"id\":(.{1,30}),\"user_id'/>
+          <http url='/events/%%_created_event_id%%/invitations' contents="invitation%5Buser_id%5D=%%_guest_id%%" method='POST'></http>
+        </request>
+      </for>
+
+      <!-- Redirect to list of all my invitations -->
+      <request subst="true">
+        <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
+        <http url='/users/%%_user_id%%/invitations'></http>
+      </request>
+
+    </session>
+
+    <session name="comment_event" probability="50" type="ts_http">
+
+      <!-- Set the user id -->
+      <setdynvars sourcetype="erlang" callback="ts_user_server:get_unique_id">
+        <var name="user_id" />
+      </setdynvars>
+
+      <!-- Fetch all my events -->
+      <request subst="true">
+        <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
+        <dyn_variable name="first_event_id" re='\"id\":(.{1,30}),\"name\":\"first'/>
+        <http url='/users/%%_user_id%%/events'></http>
+      </request>
+
+      <!-- Display a single event -->
+      <request subst="true">
+        <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
+        <http url='/events/%%_first_event_id%%'></http>
+      </request>
+
+       <!-- Display the list of guests -->
+      <request subst="true">
+        <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
+        <dyn_variable name="invitation_id" re='"id\":(.{1,30}),\"user_id\"'/>
+        <http url='/events/%%_first_event_id%%/invitations'></http>
+      </request>
+
+      <!-- Display the list of comments -->
+      <request subst="true">
+        <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
+        <http url='/events/%%_first_event_id%%/comments'></http>
+      </request>
+
+      <!-- Submit a comment -->
+      <request subst="true">
+        <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
+        <http url='/events/%%_first_event_id%%/comments' contents="comment%5Buser_id%5D=%%_user_id%%&amp;comment%5Bbody%5D=message" method='POST'></http>
+      </request>
+
+      <!-- Redirect to list of comments -->
+      <request subst="true">
+        <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
+        <http url='/events/%%_first_event_id%%/comments'></http>
+      </request>
+
+      </session>
+
+      <!-- RSVP to one invitation 
+      <request subst="true"> 
+        <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
+        <http url='/invitations/%%_invitation_id%%' contents="invitation%5Bresponse%5D=yes" method='PUT'></http>
+      </request> -->
+
+
+  </sessions>
+</tsung>
