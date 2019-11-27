@@ -8,6 +8,7 @@ class CommentsController < ApplicationController
       @user_ids = []
       @event = Event.find(params[:event_id])
       @comments = @event.comments.all
+      @comments = Comment.joins(:user).where(comments: {event_id: params[:event_id]})
       for @comment in @comments
         @user_ids << @comment.user_id
       end

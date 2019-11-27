@@ -7,7 +7,7 @@ class InvitationsController < ApplicationController
     begin
       @event_ids = []
       @user = User.find(params[:user_id])
-      @invitations = @user.invitations.all
+      @invitations = Invitation.joins(:event).where(invitations: { user_id: params[:user_id] })
       for @invitation in @invitations
         @event_ids << @invitation.event_id
       end
@@ -23,8 +23,7 @@ class InvitationsController < ApplicationController
     begin
     @user_ids = []
     @event = Event.find(params[:event_id])
-    @invitations = @event.invitations.all
-    #@user_ids = @invitaions.map{|invitation| invitaion.user_id}
+    @invitations = Invitation.joins(:user).where(invitations: { event_id: params[:event_id] })
     for @invitation in @invitations
       @user_ids << @invitation.user_id
     end
@@ -41,7 +40,7 @@ class InvitationsController < ApplicationController
   end
 
   # GET /invitations/new
-  def newf
+  def new
     begin
       @event = Event.find(params[:event_id])
     rescue
