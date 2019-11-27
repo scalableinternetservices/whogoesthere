@@ -7,11 +7,11 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 
-@total_users = 0
+@total_users = 10000
 
 
 @i = 1
-@total_events = 0
+@total_events = 10000
 @locations = ["Mercury", "Venus", "Saturn", "Jupyter", "Uranus", "Neptune"]
 while @i <= @total_users do
    @user = User.create(:name => "name_#{@i}", :email => "name_#{@i}@test.com")
