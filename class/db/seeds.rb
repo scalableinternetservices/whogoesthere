@@ -11,7 +11,6 @@
 
 @i = 1
 @total_events = 0
-@total_users = (params[:count]).to_i
 while @i <= @total_users do
    @user = User.create(:name => "name_#{@i}", :email => "name_#{@i}@test.com")
    @event_count = rand(2 .. 10)
