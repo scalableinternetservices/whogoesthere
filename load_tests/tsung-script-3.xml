@@ -9,12 +9,12 @@
 
   <!-- Server side setup -->
   <servers>
-    <server host="whogoesthere8.u3mfcffzat.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server>
+    <server host="whogoesthere.c2y2jbcu8i.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server>
   </servers>
 
   <load>
     <arrivalphase phase="1" duration="10" unit="second" wait_all_sessions_end="true">
-      <users arrivalrate="1" unit="second"></users>
+      <users arrivalrate="10" unit="second"></users>
     </arrivalphase>
   </load>
 
@@ -104,15 +104,16 @@
        <!-- Display the list of guests -->
       <request subst="true">
         <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
-        <dyn_variable name="invitation_id" re='"id\":(.{1,30}),\"user_id\"'/>
         <http url='/events/%%_first_event_id%%/invitations'></http>
       </request>
 
-      <!-- RSVP to one invitation 
+      <thinktime value="5" random="true"></thinktime>
+
+      <!-- RSVP to one invitation -->
       <request subst="true"> 
         <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
-        <http url='/invitations/%%_invitation_id%%' contents="invitation%5Bresponse%5D=yes" method='PUT'></http>
-      </request> -->
+        <http url='/invitations/%%_user_id%%' contents="invitation%5Bresponse%5D=yes" method='PUT'></http>
+      </request> 
 
       <thinktime value="2" random="true"></thinktime>
 
