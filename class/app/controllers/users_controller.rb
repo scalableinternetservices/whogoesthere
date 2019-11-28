@@ -39,6 +39,7 @@ class UsersController < ApplicationController
   
   
   def createBulk
+    require 'set'
     @i = 1
     @total_events = 0
     @total_users = (params[:count]).to_i
@@ -73,9 +74,17 @@ class UsersController < ApplicationController
     
     @i = 1
     while @i <= @total_users do
-      @event_id = rand(1 .. @total_events)
-      @invitation = Invitation.new(:user_id => @i, :event_id => @event_id)
-      @invitation.save
+      @invitation_count = rand(10 .. 20)
+      @k = 1
+      while @k <= @invitation_count
+        @event_id = rand(1 .. @total_events)
+        @invitation = Invitation.new(:user_id => @i, :event_id => @event_id)
+        @invitation.save
+        @comment = Comment.new(:user_id => @i, :event_id => @event_id, :body => rand(36**100).to_s(36))
+        @comment.save
+        @k += 1
+      end
+            
       @i += 1
     end
     
