@@ -84,7 +84,6 @@ class UsersController < ApplicationController
         @comment.save
         @k += 1
       end
-            
       @i += 1
     end
     

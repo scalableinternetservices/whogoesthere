@@ -7,17 +7,18 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 
-@total_users = 0
 
+@total_users = 0
 @i = 1
 @total_events = 0
+@locations = ["Mercury", "Venus", "Saturn", "Jupyter", "Uranus", "Neptune"]
+
 while @i <= @total_users do
    @user = User.create(:name => "name_#{@i}", :email => "name_#{@i}@test.com")
    @event_count = rand(2 .. 10)
    @j = 1
    while @j <= @event_count do
      @name = "name_#{@i}_event_#{@j}"
-     
      if @j == @event_count
        @name = "last_event"
      end
@@ -27,7 +28,7 @@ while @i <= @total_users do
      end
      @event = @user.events.new( :name =>  @name,
         :description => "An event by name_#{@i}, event number is #{@j}",
-        :location => (["Mercury", "Venus", "Saturn", "Jupyter", "Uranus", "Neptune"].sample(1)[0]),
+        :location => (@locations.sample(1)[0]),
         :start_time => "13-12-2019".to_date,
         :end_time => "14-12-2019".to_date,
         :user_id => @i
@@ -54,5 +55,3 @@ while @i <= @total_users do
   end
   @i += 1
 end
-
-
