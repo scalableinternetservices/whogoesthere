@@ -11,7 +11,7 @@
 
   <!-- Server side setup -->
   <servers>
-    <server host="whogoesthere.c2y2jbcu8i.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server>
+    <server host="whogoesthere4.yubyp3a4v3.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server>
   </servers>
 
 <!-- Total 2550 sessions -->
@@ -95,6 +95,8 @@
           <http url='/users/%%_created_user_id%%/events'></http>
         </request>
 
+        <thinktime value="10" random="true"></thinktime>
+
         <!-- Submit new event -->
         <request subst="true">
           <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
@@ -108,11 +110,15 @@
           <http url='/users/%%_created_user_id%%/events'></http>
         </request>
 
+        <thinktime value="2" random="true"></thinktime>
+
         <!-- Go to /events/created_event_id -->
         <request subst="true">
           <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <http url='/events/%%_created_event_id%%'></http>
         </request>
+
+        <thinktime value="2" random="true"></thinktime>
 
       </transaction>
 
@@ -124,12 +130,16 @@
           <http url='/events/%%_created_event_id%%/invitations'></http>
         </request>
 
+        <thinktime value="5" random="true"></thinktime>
+
         <!-- Create new invitation to second user -->
         <request subst="true">
           <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <dyn_variable name="created_invitation_id" re='"id\":(.*),\"user_id'/>
           <http url='/events/%%_created_event_id%%/invitations' contents="authenticity_token=%%_authenticity_token%%&amp;invitation%5Buser_id%5D=%%_created_user_id_2%%" method='POST'></http>
         </request>
+
+        <thinktime value="2" random="true"></thinktime>
 
       </transaction>
 
@@ -140,6 +150,8 @@
           <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <http url='/events/%%_created_event_id%%/comments'></http>
         </request>
+
+        <thinktime value="8" random="true"></thinktime>
 
         <!-- Create new comment -->
         <request subst="true">
