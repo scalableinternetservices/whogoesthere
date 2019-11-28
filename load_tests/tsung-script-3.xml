@@ -9,12 +9,12 @@
 
   <!-- Server side setup -->
   <servers>
-    <server host="whogoesthere8.u3mfcffzat.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server>
+    <server host="whogoesthere.c2y2jbcu8i.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server>
   </servers>
 
   <load>
     <arrivalphase phase="1" duration="10" unit="second" wait_all_sessions_end="true">
-      <users arrivalrate="1" unit="second"></users>
+      <users arrivalrate="10" unit="second"></users>
     </arrivalphase>
   </load>
 
@@ -38,7 +38,9 @@
       <!-- Fetch all my events -->
       <request subst="true">
         <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
-        <http url='/users/%%_user_id%%/events'></http>
+        <http url='/users/%%_user_id%%/events'>
+          <http_header name="Accept-Encoding" value="gzip, deflate"/>
+        </http>
       </request>
 
       <thinktime value="10" random="true"></thinktime>
@@ -47,13 +49,17 @@
       <request subst="true">
         <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
         <dyn_variable name="created_event_id" re='"id\":(.{1,10}),\"name\":\"Yoga'/>
-        <http url='/users/%%_user_id%%/events' version='1.1' contents="event%5Buser_id%5D=%%_user_id%%&amp;event%5Bname%5D=Yoga&amp;event%5Bdescription%5D=Downdog&amp;event%5Blocation%5D=Park&amp;event%5Bstart_time(1i)%5D=2019&amp;event%5Bstart_time(2i)%5D=11&amp;event%5Bstart_time(3i)%5D=12&amp;event%5Bstart_time(4i)%5D=23&amp;event%5Bstart_time(5i)%5D=24&amp;event%5Bend_time(1i)%5D=2019&amp;event%5Bend_time(2i)%5D=11&amp;event%5Bend_time(3i)%5D=12&amp;event%5Bend_time(4i)%5D=23&amp;event%5Bend_time(5i)%5D=24" method='POST'></http>
+        <http url='/users/%%_user_id%%/events' version='1.1' contents="event%5Buser_id%5D=%%_user_id%%&amp;event%5Bname%5D=Yoga&amp;event%5Bdescription%5D=Downdog&amp;event%5Blocation%5D=Park&amp;event%5Bstart_time(1i)%5D=2019&amp;event%5Bstart_time(2i)%5D=11&amp;event%5Bstart_time(3i)%5D=12&amp;event%5Bstart_time(4i)%5D=23&amp;event%5Bstart_time(5i)%5D=24&amp;event%5Bend_time(1i)%5D=2019&amp;event%5Bend_time(2i)%5D=11&amp;event%5Bend_time(3i)%5D=12&amp;event%5Bend_time(4i)%5D=23&amp;event%5Bend_time(5i)%5D=24" method='POST'>
+          <http_header name="Accept-Encoding" value="gzip, deflate"/>
+        </http>
       </request>
 
       <!-- Redirect to list of all my events -->
       <request subst="true">
         <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
-        <http url='/users/%%_user_id%%/events'></http>
+        <http url='/users/%%_user_id%%/events'>
+          <http_header name="Accept-Encoding" value="gzip, deflate"/>
+        </http>
       </request>
 
       <!-- Create ten invitations -->
@@ -64,7 +70,9 @@
         <request subst="true">
           <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <dyn_variable name="created_invitation_id" re='"id\":(.{1,30}),\"user_id'/>
-          <http url='/events/%%_created_event_id%%/invitations' contents="invitation%5Buser_id%5D=%%_guest_id%%" method='POST'></http>
+          <http url='/events/%%_created_event_id%%/invitations' contents="invitation%5Buser_id%5D=%%_guest_id%%" method='POST'>
+            <http_header name="Accept-Encoding" value="gzip, deflate"/>
+          </http>
         </request>
 
       </for>
@@ -72,7 +80,9 @@
       <!-- Redirect to list of all my invitations -->
       <request subst="true">
         <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
-        <http url='/users/%%_user_id%%/invitations'></http>
+        <http url='/users/%%_user_id%%/invitations'>
+          <http_header name="Accept-Encoding" value="gzip, deflate"/>
+        </http>
       </request>
 
     </session>
@@ -88,7 +98,9 @@
       <request subst="true">
         <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
         <dyn_variable name="first_event_id" re='\"id\":(.{1,30}),\"name\":\"first'/>
-        <http url='/users/%%_user_id%%/events'></http>
+        <http url='/users/%%_user_id%%/events'>
+          <http_header name="Accept-Encoding" value="gzip, deflate"/>
+        </http>
       </request>
 
       <thinktime value="2" random="true"></thinktime>
@@ -96,7 +108,9 @@
       <!-- Display a single event -->
       <request subst="true">
         <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
-        <http url='/events/%%_first_event_id%%'></http>
+        <http url='/events/%%_first_event_id%%'>
+          <http_header name="Accept-Encoding" value="gzip, deflate"/>
+        </http>
       </request>
 
       <thinktime value="2" random="true"></thinktime>
@@ -104,22 +118,29 @@
        <!-- Display the list of guests -->
       <request subst="true">
         <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
-        <dyn_variable name="invitation_id" re='"id\":(.{1,30}),\"user_id\"'/>
-        <http url='/events/%%_first_event_id%%/invitations'></http>
+        <http url='/events/%%_first_event_id%%/invitations'>
+          <http_header name="Accept-Encoding" value="gzip, deflate"/>
+        </http>
       </request>
 
-      <!-- RSVP to one invitation 
+      <thinktime value="5" random="true"></thinktime>
+
+      <!-- RSVP to one invitation -->
       <request subst="true"> 
         <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
-        <http url='/invitations/%%_invitation_id%%' contents="invitation%5Bresponse%5D=yes" method='PUT'></http>
-      </request> -->
+        <http url='/invitations/%%_user_id%%' contents="invitation%5Bresponse%5D=yes" method='PUT'>
+          <http_header name="Accept-Encoding" value="gzip, deflate"/>
+        </http>
+      </request> 
 
       <thinktime value="2" random="true"></thinktime>
 
       <!-- Display the list of comments -->
       <request subst="true">
         <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
-        <http url='/events/%%_first_event_id%%/comments'></http>
+        <http url='/events/%%_first_event_id%%/comments'>
+          <http_header name="Accept-Encoding" value="gzip, deflate"/>
+        </http>
       </request>
 
       <thinktime value="5" random="true"></thinktime>
@@ -127,13 +148,17 @@
       <!-- Submit a comment -->
       <request subst="true">
         <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
-        <http url='/events/%%_first_event_id%%/comments' contents="comment%5Buser_id%5D=%%_user_id%%&amp;comment%5Bbody%5D=message" method='POST'></http>
+        <http url='/events/%%_first_event_id%%/comments' contents="comment%5Buser_id%5D=%%_user_id%%&amp;comment%5Bbody%5D=message" method='POST'>
+          <http_header name="Accept-Encoding" value="gzip, deflate"/>
+        </http>
       </request>
 
       <!-- Redirect to list of comments -->
       <request subst="true">
         <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
-        <http url='/events/%%_first_event_id%%/comments'></http>
+        <http url='/events/%%_first_event_id%%/comments'>
+          <http_header name="Accept-Encoding" value="gzip, deflate"/>
+        </http>
       </request>
 
       </session>
