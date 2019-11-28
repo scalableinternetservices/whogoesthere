@@ -11,7 +11,7 @@
 
   <!-- Server side setup -->
   <servers>
-    <server host="whogoesthere.c2y2jbcu8i.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server>
+    <server host="whogoesthere8.u3mfcffzat.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server>
   </servers>
 
 <!-- Total 2550 sessions -->
@@ -59,30 +59,19 @@
     <session name="Hit All Endpoints" probability="100" type="ts_http">
       
       <transaction name="setup">
-
-        <request>
-          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
-          <dyn_variable name="authenticity_token"/>
-          <http url='/users/new.html'></http>
-        </request>
-
-        <!-- Grab and format authenticity token -->
-        <setdynvars sourcetype="eval" code="fun({Pid,DynVars})->{ok,Val}=ts_dynvars:lookup(authenticity_token,DynVars),re:replace(Val,&quot;[+]&quot;,&quot;%2B&quot;,[global, {return,list}]) end.">
-          <var name="authenticity_token"/>
-        </setdynvars>
         
         <!-- Create new user -->
         <request subst="true">
           <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <dyn_variable name="created_user_id" re="Location: http://.*/users/(.*)\r"/>
-          <http url='/users' version='1.1' contents="authenticity_token=%%_authenticity_token%%&amp;user%5Bname%5D=whogoesthere&amp;user%5Bemail%5D=test%%ts_user_server:get_unique_id%%@gmail.com" method='POST'></http>
+          <http url='/users' version='1.1' contents="user%5Bname%5D=whogoesthere&amp;user%5Bemail%5D=test%%ts_user_server:get_unique_id%%@gmail.com" method='POST'></http>
         </request>
 
         <!-- Create second new user -->
         <request subst="true">
           <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <dyn_variable name="created_user_id_2" re="Location: http://.*/users/(.*)\r"/>
-          <http url='/users' version='1.1' contents="authenticity_token=%%_authenticity_token%%&amp;user%5Bname%5D=whogoesthere&amp;user%5Bemail%5D=test%%ts_user_server:get_unique_id%%@mail.com" method='POST'></http>
+          <http url='/users' version='1.1' contents="user%5Bname%5D=whogoesthere&amp;user%5Bemail%5D=test%%ts_user_server:get_unique_id%%@mail.com" method='POST'></http>
         </request>
 
       </transaction>
@@ -95,11 +84,13 @@
           <http url='/users/%%_created_user_id%%/events'></http>
         </request>
 
+        <thinktime value="10" random="true"></thinktime>
+
         <!-- Submit new event -->
         <request subst="true">
           <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <dyn_variable name="created_event_id" re='"id\":(.*),\"name\":\"Yoga'/> 
-          <http url='/users/%%_created_user_id%%/events' version='1.1' contents="authenticity_token=%%_authenticity_token%%&amp;event%5Buser_id%5D=%%_created_user_id%%&amp;event%5Bname%5D=Yoga&amp;event%5Bdescription%5D=Downdawg&amp;event%5Blocation%5D=Park&amp;event%5Bstart_time(1i)%5D=2019&amp;event%5Bstart_time(2i)%5D=11&amp;event%5Bstart_time(3i)%5D=12&amp;event%5Bstart_time(4i)%5D=23&amp;event%5Bstart_time(5i)%5D=24&amp;event%5Bend_time(1i)%5D=2019&amp;event%5Bend_time(2i)%5D=11&amp;event%5Bend_time(3i)%5D=12&amp;event%5Bend_time(4i)%5D=23&amp;event%5Bend_time(5i)%5D=24" method='POST'></http>
+          <http url='/users/%%_created_user_id%%/events' version='1.1' contents="event%5Buser_id%5D=%%_created_user_id%%&amp;event%5Bname%5D=Yoga&amp;event%5Bdescription%5D=Downdawg&amp;event%5Blocation%5D=Park&amp;event%5Bstart_time(1i)%5D=2019&amp;event%5Bstart_time(2i)%5D=11&amp;event%5Bstart_time(3i)%5D=12&amp;event%5Bstart_time(4i)%5D=23&amp;event%5Bstart_time(5i)%5D=24&amp;event%5Bend_time(1i)%5D=2019&amp;event%5Bend_time(2i)%5D=11&amp;event%5Bend_time(3i)%5D=12&amp;event%5Bend_time(4i)%5D=23&amp;event%5Bend_time(5i)%5D=24" method='POST'></http>
         </request>
 
         <!-- Redirect to /users/created_user_id/events -->
@@ -108,11 +99,15 @@
           <http url='/users/%%_created_user_id%%/events'></http>
         </request>
 
+        <thinktime value="2" random="true"></thinktime>
+
         <!-- Go to /events/created_event_id -->
         <request subst="true">
           <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <http url='/events/%%_created_event_id%%'></http>
         </request>
+
+        <thinktime value="2" random="true"></thinktime>
 
       </transaction>
 
@@ -124,12 +119,16 @@
           <http url='/events/%%_created_event_id%%/invitations'></http>
         </request>
 
+        <thinktime value="5" random="true"></thinktime>
+
         <!-- Create new invitation to second user -->
         <request subst="true">
           <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <dyn_variable name="created_invitation_id" re='"id\":(.*),\"user_id'/>
-          <http url='/events/%%_created_event_id%%/invitations' contents="authenticity_token=%%_authenticity_token%%&amp;invitation%5Buser_id%5D=%%_created_user_id_2%%" method='POST'></http>
+          <http url='/events/%%_created_event_id%%/invitations' contents="invitation%5Buser_id%5D=%%_created_user_id_2%%" method='POST'></http>
         </request>
+
+        <thinktime value="2" random="true"></thinktime>
 
       </transaction>
 
@@ -141,11 +140,13 @@
           <http url='/events/%%_created_event_id%%/comments'></http>
         </request>
 
+        <thinktime value="8" random="true"></thinktime>
+
         <!-- Create new comment -->
         <request subst="true">
           <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <dyn_variable name="created_comment_id" re='"id\":(.*),\"user_id'/>
-          <http url='/events/%%_created_event_id%%/comments' contents="authenticity_token=%%_authenticity_token%%&amp;comment%5Buser_id%5D=%%_created_user_id%%&amp;comment%5Bbody%5D=message" method='POST'></http>
+          <http url='/events/%%_created_event_id%%/comments' contents="comment%5Buser_id%5D=%%_created_user_id%%&amp;comment%5Bbody%5D=message" method='POST'></http>
         </request>
 
         <!-- Go to /events/created_event_id/comments -->
