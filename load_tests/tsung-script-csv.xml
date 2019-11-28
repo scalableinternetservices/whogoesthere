@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<!DOCTYPE tsung SYSTEM "/usr/local/share/tsung/tsung-1.0.dtd" [] >
+<tsung loglevel="debug">
+
+  <!-- Client side setup -->
+  <clients>
+    <client host="localhost" use_controller_vm="true" maxusers='15000'/>
+  </clients>
+
+  <!-- Server side setup -->
+  <servers>
+    <server host="whogoesthere.c2y2jbcu8i.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server>
+  </servers>
+
+  <load>
+    <arrivalphase phase="1" duration="10" unit="second" wait_all_sessions_end="true">
+      <users arrivalrate="1" unit="second"></users>
+    </arrivalphase>
+  </load>
+
+  <options>
+    <!-- Set connection timeout to 2 seconds -->
+    <!-- Important to set file server option -->
+    <!-- Need to create csv file userlist.csv -->
+    <option name="global_ack_timeout" value="2000"></option>
+    <option name="file_server" value="/home/ec2-user/userlist.csv"></option>
+    <option type="ts_http" name="user_agent">
+      <user_agent probability="100">Mozilla/5.0 (Windows; U; Windows NT 5.2; fr-FR; rv:1.7.8) Gecko/20050511 Firefox/1.0.4</user_agent>
+    </option>
+  </options>
+
+  <sessions>
+
+    <session name="read_csv" probability="100" type="ts_http">
+  
+      <!-- Read first line from csv file -->
+      <setdynvars sourcetype="eval" code='fun({Pid,DynVar})->{ok,Line}=ts_file_server:get_next_line(),Line end.'>
+        <var name="line_from_file"/>
+      </setdynvars>
+
+      <setdynvars sourcetype="eval" code='fun({Pid,DynVars})->{ok,Val}=ts_dynvars:lookup(line_from_file,DynVars),Val end.'>
+        <var name="blah2"/>
+      </setdynvars>
+
+      <request subst="true">
+        <http url='/%%_blah2%%'></http>
+      </request>
+
+    </session>
+
+  </sessions>
+
+</tsung>

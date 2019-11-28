@@ -57,6 +57,9 @@ It's Whogoesthere.
 
         }
 
+## Event [/events/{id}/invitations/new]
+### Create a New Invitation [GET]
+
 ## Event [/events/{id}/invitations]
 ### Create an invitation to the event [POST]
 
@@ -95,7 +98,7 @@ It's Whogoesthere.
 + Response 200 (application/json)
 
 ## User Collection [/users/{id}/events]
-### Create a New Event [POST]
+### Create a New Event [GET]
 
 You can create an event.
 
@@ -178,6 +181,7 @@ You can create an event.
 ## User Collection [/users/{id}]
 ### Delete a User [DELETE]
 + Response 200 (application/json)
++ Response 204 if {id} not present/already deleted (application/json)
 
 ## User [/users/]
 ## Create a new user [POST]
@@ -215,29 +219,7 @@ You can create an event.
 
 ## Comments Collection [/events/{id}/comments/]
 
-### Get all Comments for an event [GET]
-
-+ Response 200 (application/json)
-
-        [
-            {
-                "id": 2,
-                "user_id": 775, 
-                "event_id": 641,
-                "body": "updatedMMessage",
-                "created_at": "2015-08-05T08:40:51.620Z",
-                "updated_at":"2019-11-16T18:36:28.612Z",
-                "url":"http://whogoesthere.c2y2jbcu8i.us-west-2.elasticbeanstalk.com/comments/2",
-            }
-        ]
-
-## Comments Collection [/events/{id}/comments/new]
-### GET a form to crete a new comment [GET]
-
-## Comments Collection [/comments/{id}/edit]
-## [GET]
-
-### Post a Comment [POST]
+### Post a Comment [POST] 
 
 + Request (application/json)
 
@@ -276,6 +258,28 @@ You can create an event.
             "url":"http://whogoesthere.c2y2jbcu8i.us-west-2.elasticbeanstalk.com/comments/2",
         }
 
+### Get all Comments for an event [GET]
+
++ Response 200 (application/json)
+
+        [
+            {
+                "id": 2,
+                "user_id": 775, 
+                "event_id": 641,
+                "body": "updatedMessage",
+                "created_at": "2015-08-05T08:40:51.620Z",
+                "updated_at":"2019-11-16T18:36:28.612Z",
+                "url":"http://whogoesthere.c2y2jbcu8i.us-west-2.elasticbeanstalk.com/comments/2",
+            }
+        ]
+
+## Comments Collection [/events/{id}/comments/new]
+### GET a form to crete a new comment [GET]
+
+## Comments Collection [/comments/{id}/edit]
+## [GET]
+
 ## Comments Collection [/comments/{id}]
 ## Get a Comment [GET]
 + Response 200 (application/json)
@@ -284,7 +288,7 @@ You can create an event.
             "id": 2,
             "user_id": 775, 
             "event_id": 641,
-            "body": "updatedMMessage",
+            "body": "updatedMessage",
             "created_at": "2015-08-05T08:40:51.620Z",
             "updated_at":"2019-11-16T18:36:28.612Z",
             "url":"http://whogoesthere.c2y2jbcu8i.us-west-2.elasticbeanstalk.com/comments/2",
@@ -331,3 +335,12 @@ You can create an event.
 ## Invitation [/invitations/{id}]
 ### Delete an Invitation [DELETE]
 + Response 200 (application/json)
+
+
+## Load Testing Endpoints 
+## Clear the database [/users/deleteall]
++ Response 200 (application/json)
+
+## Preload the database with users [/users/createbulk/{number_to_create}]
++ Response 200 (application/json)
++ Response 204 if already deleted (application/json)

@@ -2,6 +2,9 @@
 Rails.application.routes.draw do
   root 'users#index', defaults: {format: :json}
   get '/users/:user_id/invitations', to: 'invitations#indexbyuser', defaults: {format: :json}
+  get '/users/deleteall', to: 'users#destroyAll', defaults: {format: :json}    ## DELETE ALL USERS
+  get '/users/createbulk/:count', to: 'users#createBulk', defaults: {format: :json}    ## CREATE A LOT OF USER
+
   get '/events/:event_id/invitations', to: 'invitations#indexbyevent', defaults: {format: :json}
   resources :users, defaults: {format: :json} do
     resources :invitations, shallow:true, except: ['new', 'create','index'], defaults: {format: :json}
