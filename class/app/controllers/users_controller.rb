@@ -39,6 +39,7 @@ class UsersController < ApplicationController
   
   
   def createBulk
+    require 'set'
     @i = 1
     @total_events = 0
     @total_users = (params[:count]).to_i
