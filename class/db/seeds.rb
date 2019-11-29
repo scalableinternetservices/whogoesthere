@@ -8,7 +8,7 @@
 
 
 
-@total_users = 5000
+@total_users = 10000
 @i = 1
 @total_events = 0
 @locations = ["Mercury", "Venus", "Saturn", "Jupyter", "Uranus", "Neptune"]
