@@ -7,7 +7,7 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 
-@total_users = 30000
+@total_users = 20000
 
 @i = 1
 @total_events = 0
