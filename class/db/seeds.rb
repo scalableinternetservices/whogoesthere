@@ -6,7 +6,6 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-
 @total_users = 5000
 
 @i = 1
@@ -54,5 +53,4 @@ while @i <= @total_users do
   end
   @i += 1
 end
-
 

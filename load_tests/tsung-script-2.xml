@@ -31,6 +31,19 @@
       
       <transaction name="setup">
 
+        <request>
+          <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
+          <dyn_variable name="authenticity_token"/>
+          <http url='/users/new.html'>
+            <http_header name="Accept-Encoding" value="gzip, deflate"/>
+          </http>
+        </request>
+
+        <!-- Grab and format authenticity token -->
+        <setdynvars sourcetype="eval" code="fun({Pid,DynVars})->{ok,Val}=ts_dynvars:lookup(authenticity_token,DynVars),re:replace(Val,&quot;[+]&quot;,&quot;%2B&quot;,[global, {return,list}]) end.">
+          <var name="authenticity_token"/>
+        </setdynvars>
+
         <!-- Set the user id -->
         <setdynvars sourcetype="erlang" callback="ts_user_server:get_unique_id">
           <var name="user_id" />
@@ -40,7 +53,9 @@
         <request subst="true">
           <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <dyn_variable name="total_num_users" re='users/(.{1,30})\"}]'/>
-          <http url='/users'></http>
+          <http url='/users'>
+            <http_header name="Accept-Encoding" value="gzip, deflate"/>
+          </http>
         </request>
 
       </transaction>
@@ -53,7 +68,9 @@
           <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <dyn_variable name="first_event_id" re='\"id\":(.{1,30}),\"name\":\"first'/>
           <dyn_variable name="last_event_id" re='\"id\":(.{1,30}),\"name\":\"last_event'/>
-          <http url='/users/%%_user_id%%/events'></http>
+          <http url='/users/%%_user_id%%/events'>
+            <http_header name="Accept-Encoding" value="gzip, deflate"/>
+          </http>
         </request>
 
         <thinktime value="2" random="true"></thinktime>
@@ -67,7 +84,9 @@
           <if var="event_probability" gte="8">
             <request subst="true">
               <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
-              <http url='/events/%%_event_num%%'></http>
+              <http url='/events/%%_event_num%%'>
+                <http_header name="Accept-Encoding" value="gzip, deflate"/>
+              </http>
             </request>
             <for from="1" to="%%_total_num_users%%" var="user_num">
               <setdynvars sourcetype="random_number" start="0" end="10" >
@@ -77,11 +96,15 @@
                 <thinktime value="5" random="true"></thinktime>
                 <request subst="true">
                   <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
-                  <http url='/events/%%_event_num%%/invitations'></http>
+                  <http url='/events/%%_event_num%%/invitations'>
+                    <http_header name="Accept-Encoding" value="gzip, deflate"/>
+                  </http>
                 </request>
                 <request subst="true">
                   <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
-                  <http url='/events/%%_event_num%%/invitations' contents="invitation%5Buser_id%5D=%%_user_num%%" method='POST'></http>
+                  <http url='/events/%%_event_num%%/invitations' contents="authenticity_token=%%_authenticity_token%%&amp;invitation%5Buser_id%5D=%%_user_num%%" method='POST'>
+                    <http_header name="Accept-Encoding" value="gzip, deflate"/>
+                  </http>
                 </request>
               </if>
             </for>
@@ -92,15 +115,21 @@
               <thinktime value="5" random="true"></thinktime>
               <request subst="true">
                 <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
-                <http url='/events/%%_event_num%%/comments'></http>
+                <http url='/events/%%_event_num%%/comments'>
+                  <http_header name="Accept-Encoding" value="gzip, deflate"/>
+                </http>
               </request>
               <request subst="true">
                 <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
-                <http url='/events/%%_event_num%%/comments' contents="comment%5Buser_id%5D=%%_user_id%%&amp;comment%5Bbody%5D=message" method='POST'></http>
+                <http url='/events/%%_event_num%%/comments' contents="authenticity_token=%%_authenticity_token%%&amp;comment%5Buser_id%5D=%%_user_id%%&amp;comment%5Bbody%5D=message" method='POST'>
+                  <http_header name="Accept-Encoding" value="gzip, deflate"/>
+                </http>
               </request>
               <request subst="true">
                 <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
-                <http url='/events/%%_event_num%%/comments'></http>
+                <http url='/events/%%_event_num%%/comments'>
+                  <http_header name="Accept-Encoding" value="gzip, deflate"/>
+                </http>
               </request>
             </if>
           </if>
@@ -115,11 +144,15 @@
             <thinktime value="10" random="true"></thinktime>
             <request subst="true">
               <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
-              <http url='/users/%%_user_id%%/events' version='1.1' contents="event%5Buser_id%5D=%%_user_id%%&amp;event%5Bname%5D=Yoga&amp;event%5Bdescription%5D=Downdawg&amp;event%5Blocation%5D=Park&amp;event%5Bstart_time(1i)%5D=2019&amp;event%5Bstart_time(2i)%5D=11&amp;event%5Bstart_time(3i)%5D=12&amp;event%5Bstart_time(4i)%5D=23&amp;event%5Bstart_time(5i)%5D=24&amp;event%5Bend_time(1i)%5D=2019&amp;event%5Bend_time(2i)%5D=11&amp;event%5Bend_time(3i)%5D=12&amp;event%5Bend_time(4i)%5D=23&amp;event%5Bend_time(5i)%5D=24" method='POST'></http>
+              <http url='/users/%%_user_id%%/events' version='1.1' contents="authenticity_token=%%_authenticity_token%%&amp;event%5Buser_id%5D=%%_user_id%%&amp;event%5Bname%5D=Yoga&amp;event%5Bdescription%5D=Downdawg&amp;event%5Blocation%5D=Park&amp;event%5Bstart_time(1i)%5D=2019&amp;event%5Bstart_time(2i)%5D=11&amp;event%5Bstart_time(3i)%5D=12&amp;event%5Bstart_time(4i)%5D=23&amp;event%5Bstart_time(5i)%5D=24&amp;event%5Bend_time(1i)%5D=2019&amp;event%5Bend_time(2i)%5D=11&amp;event%5Bend_time(3i)%5D=12&amp;event%5Bend_time(4i)%5D=23&amp;event%5Bend_time(5i)%5D=24" method='POST'>
+                <http_header name="Accept-Encoding" value="gzip, deflate"/>
+              </http>
             </request>
             <request subst="true">
               <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
-              <http url='/users/%%_user_id%%/events'></http>
+              <http url='/users/%%_user_id%%/events'>
+                <http_header name="Accept-Encoding" value="gzip, deflate"/>
+              </http>
             </request>
           </if>
         </for>
@@ -130,7 +163,9 @@
         <request subst="true">
           <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <dyn_variable name="created_event_id" re='"id\":(.{1,10}),\"name\":\"Yoga'/>
-          <http url='/users/%%_user_id%%/events' version='1.1' contents="event%5Buser_id%5D=%%_user_id%%&amp;event%5Bname%5D=Yoga&amp;event%5Bdescription%5D=Downdawg&amp;event%5Blocation%5D=Park&amp;event%5Bstart_time(1i)%5D=2019&amp;event%5Bstart_time(2i)%5D=11&amp;event%5Bstart_time(3i)%5D=12&amp;event%5Bstart_time(4i)%5D=23&amp;event%5Bstart_time(5i)%5D=24&amp;event%5Bend_time(1i)%5D=2019&amp;event%5Bend_time(2i)%5D=11&amp;event%5Bend_time(3i)%5D=12&amp;event%5Bend_time(4i)%5D=23&amp;event%5Bend_time(5i)%5D=24" method='POST'></http>
+          <http url='/users/%%_user_id%%/events' version='1.1' contents="authenticity_token=%%_authenticity_token%%&amp;event%5Buser_id%5D=%%_user_id%%&amp;event%5Bname%5D=Yoga&amp;event%5Bdescription%5D=Downdawg&amp;event%5Blocation%5D=Park&amp;event%5Bstart_time(1i)%5D=2019&amp;event%5Bstart_time(2i)%5D=11&amp;event%5Bstart_time(3i)%5D=12&amp;event%5Bstart_time(4i)%5D=23&amp;event%5Bstart_time(5i)%5D=24&amp;event%5Bend_time(1i)%5D=2019&amp;event%5Bend_time(2i)%5D=11&amp;event%5Bend_time(3i)%5D=12&amp;event%5Bend_time(4i)%5D=23&amp;event%5Bend_time(5i)%5D=24" method='POST'>
+            <http_header name="Accept-Encoding" value="gzip, deflate"/>
+          </http>
         </request>
 
         <thinktime value="5" random="true"></thinktime>
@@ -139,7 +174,9 @@
         <request subst="true">
           <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <dyn_variable name="created_invitation_id" re='"id\":(.{1,30}),\"user_id'/>
-          <http url='/events/%%_created_event_id%%/invitations' contents="invitation%5Buser_id%5D=%%_user_id%%" method='POST'></http>
+          <http url='/events/%%_created_event_id%%/invitations' contents="authenticity_token=%%_authenticity_token%%&amp;invitation%5Buser_id%5D=%%_user_id%%" method='POST'>
+            <http_header name="Accept-Encoding" value="gzip, deflate"/>
+          </http>
         </request>
 
         <!-- Fetch all my invitations -->
@@ -147,7 +184,9 @@
           <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
           <dyn_variable name="invitation_id" re='"id\":(.{1,30}),\"user_id\"'/>
           <dyn_variable name="event_id" re='"event_id\":(.{1,30}),\"response\"'/>
-          <http url='/users/%%_user_id%%/invitations'></http>
+          <http url='/users/%%_user_id%%/invitations'>
+            <http_header name="Accept-Encoding" value="gzip, deflate"/>
+          </http>
         </request>
 
         <thinktime value="2" random="true"></thinktime>
@@ -155,7 +194,9 @@
         <!-- Display event page for one invitation -->
         <request subst="true">
           <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
-          <http url='/events/%%_created_event_id%%/invitations'></http>
+          <http url='/events/%%_created_event_id%%/invitations'>
+            <http_header name="Accept-Encoding" value="gzip, deflate"/>
+          </http>
         </request>
 
         <thinktime value="5" random="true"></thinktime>
@@ -163,7 +204,9 @@
         <!-- RSVP to one invitation -->
         <request subst="true"> 
           <match do="abort" when="nomatch">HTTP/1.1 (2|3)\d\d</match>
-          <http url='/invitations/%%_created_invitation_id%%' contents="invitation%5Bresponse%5D=yes" method='PUT'></http>
+          <http url='/invitations/%%_created_invitation_id%%' contents="authenticity_token=%%_authenticity_token%%&amp;invitation%5Bresponse%5D=yes" method='PUT'>
+            <http_header name="Accept-Encoding" value="gzip, deflate"/>
+          </http>
         </request>
 
       </transaction>
