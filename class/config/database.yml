@@ -80,11 +80,18 @@ test:
 #   production:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
-production:
-  <<: *default
-  adapter: postgresql
-  database: <%= ENV['RDS_DB_NAME'] %>
-  host: <%= ENV['RDS_HOSTNAME'] %>
-  password: <%= ENV['RDS_PASSWORD'] %>
-  port: <%= ENV['RDS_PORT'] %>
-  username: <%= ENV['RDS_USERNAME'] %>
+production:''
+  primary:
+    <<: *default
+    user: root
+    adapter: postgresql
+    database: <%= ENV['RDS_DB_NAME'] %>
+    host: <%= ENV['RDS_HOSTNAME'] %>
+    password: <%= ENV['RDS_PASSWORD'] %>
+    port: <%= ENV['RDS_PORT'] %>
+    username: <%= ENV['RDS_USERNAME'] %>
+  primary_replica:
+    database: <%= ENV['RDS_DB_NAME'] %>
+    user: root_readonly
+    adapter: postgresql
+    replica: true
