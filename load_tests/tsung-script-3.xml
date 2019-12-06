@@ -131,7 +131,6 @@
         <http url='/invitations/%%_user_id%%' contents="invitation%5Bresponse%5D=yes" method='PUT'>
           <http_header name="Accept-Encoding" value="gzip, deflate"/>
         </http>
-      </request> 
 
       <thinktime value="2" random="true"></thinktime>
 
