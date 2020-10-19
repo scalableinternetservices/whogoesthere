@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <img src="https://github.com/scalableinternetservices/whogoesthere/blob/master/logo.png?raw=true" alt="WhoGoesThere Logo" width="200">
+  <img src="https://github.com/scalableinternetservices/whogoesthere/blob/master/logo.png?raw=true" alt="WhoGoesThere Logo" width="800">
   <br>
  WhoGoesThere?!  
   <br>
