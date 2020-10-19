@@ -2,7 +2,7 @@
   <br>
   <img src="https://github.com/scalableinternetservices/whogoesthere/blob/master/logo.png?raw=true" alt="WhoGoesThere Logo" width="200">
   <br>
-# WhoGoesThere?!  
+ WhoGoesThere?!  
   <br>
 </h1>
 ----------------------------------------------------------------------
