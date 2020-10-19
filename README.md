@@ -5,7 +5,7 @@
  WhoGoesThere?!  
   <br>
 </h1>
-----------------------------------------------------------------------
+
 
 This project was an attempt to experiment with different scaling techniques. Initially, we implemented a client-server application insipired by [Doodle](https://doodle.com/en/) and consequently, we experiemented with the following techniques to maximally scale the application:
 
